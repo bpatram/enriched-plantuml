@@ -1,0 +1,253 @@
+' NOTICE: This document is for older versions of PlantUML before the updated
+' preprocessor introduced procs, functions, and variables! If you are using
+' a current version of PlantUML include styles.puml instead.
+!pragma teoz true
+
+!define TODAY %date[yyyy-MM-dd]%
+!define CODE_FONT Menlo
+
+!definelong STD_HEADER
+    !ifdef COMPANY_NAME && AUTHOR_NAME
+        COMPANY_NAME\n AUTHOR_NAME\nRev TODAY
+    !else
+        Please define COMPANY_NAME and AUTHOR_NAME
+    !endif
+!enddefinelong
+
+!definelong STD_FOOTER
+    !ifdef COMPANY_NAME
+        Confidential - COMPANY_NAME
+    !else
+        Confidential
+    !endif
+!enddefinelong
+
+!definelong USE_WORD_WRAP(width = 125)
+    skinparam wrapWidth width
+    skinparam wrapMessageWidth width
+    skinparam maxMessageSize width
+!enddefinelong
+
+!definelong USE_DEFAULT_STYLES()
+    ' GENERAL STYLING
+    skinparam arrowColor Black
+    skinparam shadowing false
+    skinparam padding 2
+    skinparam defaultFontName Helvetica
+    skinparam roundCorner 3
+
+    skinparam Note {
+        BackgroundColor Khaki
+        BorderColor Olive
+        FontSize 9
+    }
+
+    skinparam Legend {
+        BackgroundColor GhostWhite
+        BorderThickness 1
+        BorderColor LightGrey
+    }
+
+    ' ACTIVITY DIAGRAM STYLING
+
+    skinparam Activity {
+        ' should mimic state styling
+        FontStyle Normal
+        FontSize 12
+        FontColor Black
+        BackgroundColor GhostWhite
+        BorderColor Lavender
+        BorderThickness 0
+
+        Diamond {
+            FontStyle Bold
+            FontSize 12
+            FontColor Black
+            BackgroundColor LightSteelBlue
+            BorderColor LightSteelBlue
+        }
+    }
+
+    skinparam Swimlane {
+        BorderColor SlateGray
+        BorderThickness 2
+    }
+
+    ' STATE DIAGRAM STYLING
+
+    skinparam State {
+        BackgroundColor GhostWhite
+        BorderColor Lavender
+        FontColor Black
+        FontStyle Bold
+        FontSize 12
+        AttributeFontSize 11
+        AttributeFontColor DarkSlateGrey
+
+        BackgroundColor<<todo>> RoyalBlue
+        BorderColor<<todo>> MediumBlue
+        FontColor<<todo>> White
+        AttributeFontColor<<todo>> White
+
+        BackgroundColor<<inprogress>> Gold
+        BorderColor<<inprogress>> GoldenRod
+        AttributeFontColor<<inprogress>> Black
+
+        BackgroundColor<<done>> ForestGreen
+        BorderColor<<done>> DarkGreen
+        FontColor<<done>> White
+        AttributeFontColor<<done>> White
+    }
+
+    ' SEQUENCE DIAGRAM STYLING
+
+    skinparam BoxPadding 20
+
+    skinparam Sequence {
+        ArrowThickness 2
+
+        Participant {
+            Padding 10
+            BorderColor SlateGrey
+            BackgroundColor GhostWhite
+        }
+
+        Actor {
+            BorderColor SlateGrey
+            BackgroundColor GhostWhite
+        }
+
+        LifeLine {
+            BorderColor LightGrey
+            BackgroundColor GhostWhite
+        }
+
+        Box {
+            BackgroundColor transparent
+            BorderColor DarkGrey
+        }
+
+        Group {
+            ' Should match Reference styling
+            BackgroundColor LightSteelBlue
+            BorderColor LightSteelBlue
+            BorderThickness 1
+            BodyBackgroundColor Transparent
+        }
+
+        Reference {
+            ' Should match Group styling
+            HeaderBackgroundColor LightSteelBlue
+            BorderColor LightSteelBlue
+            BorderThickness 1
+            BodyBackgroundColor Transparent
+        }
+
+        Divider {
+            BackgroundColor LightSteelBlue
+            BorderColor LightSteelBlue
+        }
+    }
+
+    skinparam Database {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
+
+    skinparam Boundary {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
+
+    skinparam Control {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
+
+    skinparam Entity {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
+
+    ' CLASS DIAGRAM STYLING
+
+    skinparam packageStyle Frame
+
+    skinparam Class {
+        HeaderBackgroundColor GhostWhite
+        BackgroundColor Transparent
+        BorderColor Lavender
+        FontStyle Bold
+        FontSize 12
+        FontColor Black
+
+        AttributeFontSize 11
+        AttributeFontColor DarkSlateGrey
+    }
+
+    skinparam Stereotype {
+        C {
+            BackgroundColor LightSteelBlue
+            BorderColor LightSteelBlue
+        }
+    }
+
+    skinparam Package {
+        ' Should match Sequence.Reference styling
+        HeaderBackgroundColor LightSteelBlue
+        BorderColor LightSteelBlue
+        BorderThickness 1
+        BackgroundColor Transparent
+    }
+!enddefinelong
+
+!definelong USE_ERD_STYLES()
+    ' https://github.com/plantuml/plantuml/pull/31
+    hide circle
+    hide empty members
+    hide stereotype
+
+    ' not sure why, but it seems entity uses the Class styles?
+    skinparam Class {
+        BorderColor<<table>> DarkSlateGrey
+        HeaderBackgroundColor<<table>> LightSteelBlue
+        BackgroundColor<<table>> GhostWhite
+
+        AttributeIconSize<<table>> 8
+        AttributeFontName<<table>> CODE_FONT
+        AttributeFontSize<<table>> 11
+        AttributeFontColor<<table>> DarkSlateGrey
+    }
+
+    skinparam Class {
+        BorderColor<<enum>> PaleVioletRed
+        HeaderBackgroundColor<<enum>> Pink
+        BackgroundColor<<enum>> LightPink
+
+        AttributeIconSize<<enum>> 8
+        AttributeFontName<<enum>> CODE_FONT
+        AttributeFontSize<<enum>> 11
+        AttributeFontColor<<enum>> DarkSlateGrey
+    }
+!enddefinelong
+
+' macros for ERD
+!define PK_TYPE INTEGER(11)
+
+!define table(name) entity name<<table>>
+!define enum_mapping(name, type) enum name<type><<enum>>
+
+!define has_one(from, to) from }--|| to
+!define has_many(from, to) from }--{ to
+!define column_pk(name = "id") # name: PK_TYPE
+!define column_pk(name = "id", type) # name: type
+!define column_fk(name) + name: PK_TYPE
+!define column_fk(name, type) + name: type
+!define column_non_nullable(name, type) * name: type
+!define column_nullable(name, type) name: type
+!define omitted_columns(name = "...") //name//
+
+!definelong timestamps()
+    column_non_nullable(created_at, DATETIME)
+    column_non_nullable(updated_at, DATETIME)
+!enddefinelong
