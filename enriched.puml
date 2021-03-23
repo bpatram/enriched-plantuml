@@ -1,35 +1,78 @@
-' NOTICE: This document is for older versions of PlantUML before the updated
-' preprocessor introduced procs, functions, and variables! If you are using
-' a current version of PlantUML include styles.puml instead.
-!pragma teoz true
+' ===
+' Document information helpers
+' ===
 
-!define TODAY %date[yyyy-MM-dd]%
-!define CODE_FONT Menlo
+!$today = %date("yyyy-MM-dd")
+!$confidential = %true()
+!$title = "[Untitled] (set $title)"
+!$hide_meta = %false()
+' !$revision_name = "1"
+' !$author_name = "Your Name"
+' !$company_name = "Where you work"
 
-!definelong STD_HEADER
-    !ifdef COMPANY_NAME && AUTHOR_NAME
-        COMPANY_NAME\n AUTHOR_NAME\nRev TODAY
-    !else
-        Please define COMPANY_NAME and AUTHOR_NAME
+!procedure $add_std_header()
+    !$header = ""
+    !if (%variable_exists("$author_name"))
+        !$header = $header + "Author: " + $author_name + "\n"
     !endif
-!enddefinelong
-
-!definelong STD_FOOTER
-    !ifdef COMPANY_NAME
-        Confidential - COMPANY_NAME
-    !else
-        Confidential
+    !if (%variable_exists("$revision_name"))
+        !$header = $header + $title + " Rev. " + $revision_name + "\n"
     !endif
-!enddefinelong
 
-!definelong USE_WORD_WRAP(width = 125)
-    skinparam wrapWidth width
-    skinparam wrapMessageWidth width
-    skinparam maxMessageSize width
-!enddefinelong
+    !$header = $header + "Rendered on " + $today
 
-!definelong USE_DEFAULT_STYLES()
-    ' GENERAL STYLING
+    !if ($hide_meta == %false())
+        header "$header"
+    !endif
+!endprocedure
+
+!procedure $add_std_footer()
+    !$footer = ""
+    !if ($confidential == %true())
+        skinparam FooterFontColor red
+        !$footer = $footer + "Confidential"
+    !endif
+    !if (%variable_exists("$company_name"))
+        !$footer = $footer + " - " + $company_name
+    !endif
+
+    !if ($hide_meta == %false())
+        footer "\n$footer"
+    !endif
+!endprocedure
+
+!procedure $add_std_title()
+    !if ($hide_meta == %false())
+        title "$title"
+    !endif
+!endprocedure
+
+!procedure $add_std_info()
+    $add_std_header()
+    $add_std_footer()
+    $add_std_title()
+!endprocedure
+
+' ===
+' Styling Helpers
+' ===
+
+!procedure $use_word_wrap($width = 125)
+    skinparam wrapWidth $width
+    skinparam wrapMessageWidth $width
+    skinparam maxMessageSize $width
+!endprocedure
+
+!procedure $use_horizontal_layout()
+    left to right direction
+!endprocedure
+
+' ===
+' Styling
+' ===
+
+!procedure $apply_std_style()
+    skinparam actorStyle awesome
     skinparam arrowColor Black
     skinparam shadowing false
     skinparam padding 2
@@ -39,6 +82,7 @@
     skinparam Note {
         BackgroundColor Khaki
         BorderColor Olive
+        BorderThickness 1
         FontSize 9
     }
 
@@ -46,107 +90,6 @@
         BackgroundColor GhostWhite
         BorderThickness 1
         BorderColor LightGrey
-    }
-
-    ' ACTIVITY DIAGRAM STYLING
-
-    skinparam Activity {
-        ' should mimic state styling
-        FontStyle Normal
-        FontSize 12
-        FontColor Black
-        BackgroundColor GhostWhite
-        BorderColor Lavender
-        BorderThickness 0
-
-        Diamond {
-            FontStyle Bold
-            FontSize 12
-            FontColor Black
-            BackgroundColor LightSteelBlue
-            BorderColor LightSteelBlue
-        }
-    }
-
-    skinparam Swimlane {
-        BorderColor SlateGray
-        BorderThickness 2
-    }
-
-    ' STATE DIAGRAM STYLING
-
-    skinparam State {
-        BackgroundColor GhostWhite
-        BorderColor Lavender
-        FontColor Black
-        FontStyle Bold
-        FontSize 12
-        AttributeFontSize 11
-        AttributeFontColor DarkSlateGrey
-
-        BackgroundColor<<todo>> RoyalBlue
-        BorderColor<<todo>> MediumBlue
-        FontColor<<todo>> White
-        AttributeFontColor<<todo>> White
-
-        BackgroundColor<<inprogress>> Gold
-        BorderColor<<inprogress>> GoldenRod
-        AttributeFontColor<<inprogress>> Black
-
-        BackgroundColor<<done>> ForestGreen
-        BorderColor<<done>> DarkGreen
-        FontColor<<done>> White
-        AttributeFontColor<<done>> White
-    }
-
-    ' SEQUENCE DIAGRAM STYLING
-
-    skinparam BoxPadding 20
-
-    skinparam Sequence {
-        ArrowThickness 2
-
-        Participant {
-            Padding 10
-            BorderColor SlateGrey
-            BackgroundColor GhostWhite
-        }
-
-        Actor {
-            BorderColor SlateGrey
-            BackgroundColor GhostWhite
-        }
-
-        LifeLine {
-            BorderColor LightGrey
-            BackgroundColor GhostWhite
-        }
-
-        Box {
-            BackgroundColor transparent
-            BorderColor DarkGrey
-        }
-
-        Group {
-            ' Should match Reference styling
-            BackgroundColor LightSteelBlue
-            BorderColor LightSteelBlue
-            BorderThickness 1
-            BodyBackgroundColor Transparent
-        }
-
-        Reference {
-            ' Should match Group styling
-            HeaderBackgroundColor LightSteelBlue
-            BorderColor LightSteelBlue
-            BorderThickness 1
-            BodyBackgroundColor Transparent
-        }
-
-        Divider {
-            BackgroundColor LightSteelBlue
-            BorderColor LightSteelBlue
-        }
     }
 
     skinparam Database {
@@ -169,14 +112,160 @@
         BorderColor SlateGrey
     }
 
-    ' CLASS DIAGRAM STYLING
+    skinparam Collections {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
 
+    skinparam Queue {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
+
+    skinparam Artifact {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
+
+    skinparam Agent {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
+
+    skinparam Actor {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
+
+    skinparam Usecase {
+        BackgroundColor GhostWhite
+        BorderColor SlateGrey
+    }
+
+    skinparam Package {
+        ' Should match Sequence.Reference styling
+        HeaderBackgroundColor LightSteelBlue
+        BorderColor LightSteelBlue
+        BorderThickness 1
+        BackgroundColor Transparent
+    }
+!endprocedure
+
+' Diagram specific styles (should follow $apply_*_styles() naming convention)
+
+!procedure $apply_activity_styles()
+    ' should mimic state styling
+    skinparam Activity {
+        FontStyle Normal
+        FontSize 12
+        FontColor Black
+        BackgroundColor GhostWhite
+        BorderColor DarkSlateGrey
+        BorderThickness 1
+
+        Diamond {
+            FontStyle Bold
+            FontSize 12
+            FontColor Black
+            BackgroundColor LightSteelBlue
+            BorderColor DarkSlateGrey
+            BorderThickness 1
+        }
+    }
+
+    skinparam Swimlane {
+        BorderColor SlateGray
+        BorderThickness 3
+    }
+!endprocedure
+
+!procedure $apply_sequence_styles()
+    autonumber
+    autoactivate on
+    hide unlinked
+
+    skinparam actorStyle stick
+    skinparam style strictuml
+    skinparam BoxPadding 20
+
+    skinparam Sequence {
+        ArrowThickness 2
+
+        Participant {
+            BackgroundColor GhostWhite
+            BorderColor SlateGrey
+        }
+
+        LifeLine {
+            BorderColor SlateGrey
+            BackgroundColor LightSteelBlue
+        }
+
+        Box {
+            BackgroundColor GhostWhite
+            BorderColor DarkGrey
+        }
+
+        Group {
+            ' Should match Reference styling
+            BackgroundColor LightSteelBlue
+            BorderColor DarkSlateGrey
+            BorderThickness 1
+            BodyBackgroundColor Transparent
+        }
+
+        Reference {
+            ' Should match Group styling
+            HeaderBackgroundColor LightSteelBlue
+            BorderColor DarkSlateGrey
+            BorderThickness 1
+            BodyBackgroundColor Transparent
+        }
+
+        Divider {
+            BackgroundColor Khaki
+            BorderColor Olive
+        }
+    }
+!endprocedure
+
+!procedure $apply_state_styles()
+    hide empty description
+
+    ' should mimick activity styling
+    skinparam State {
+        BackgroundColor GhostWhite
+        BorderColor DarkSlateGrey
+        FontColor Black
+        FontStyle Bold
+        FontSize 12
+        AttributeFontSize 11
+        AttributeFontColor DarkSlateGrey
+        BorderThickness 1
+
+        BackgroundColor<<todo>> RoyalBlue
+        BorderColor<<todo>> MediumBlue
+        FontColor<<todo>> White
+        AttributeFontColor<<todo>> White
+
+        BackgroundColor<<inprogress>> Gold
+        BorderColor<<inprogress>> GoldenRod
+        AttributeFontColor<<inprogress>> Black
+
+        BackgroundColor<<done>> ForestGreen
+        BorderColor<<done>> DarkGreen
+        FontColor<<done>> White
+        AttributeFontColor<<done>> White
+    }
+!endprocedure
+
+!procedure $apply_class_styles()
     skinparam packageStyle Frame
 
     skinparam Class {
-        HeaderBackgroundColor GhostWhite
-        BackgroundColor Transparent
-        BorderColor Lavender
+        HeaderBackgroundColor LightSteelBlue
+        BackgroundColor GhostWhite
+        BorderColor DarkSlateGrey
         FontStyle Bold
         FontSize 12
         FontColor Black
@@ -187,21 +276,13 @@
 
     skinparam Stereotype {
         C {
-            BackgroundColor LightSteelBlue
-            BorderColor LightSteelBlue
+            BackgroundColor GhostWhite
+            BorderColor DarkSlateGrey
         }
     }
+!endprocedure
 
-    skinparam Package {
-        ' Should match Sequence.Reference styling
-        HeaderBackgroundColor LightSteelBlue
-        BorderColor LightSteelBlue
-        BorderThickness 1
-        BackgroundColor Transparent
-    }
-!enddefinelong
-
-!definelong USE_ERD_STYLES()
+!procedure $apply_er_styles()
     ' https://github.com/plantuml/plantuml/pull/31
     hide circle
     hide empty members
@@ -211,27 +292,45 @@
     skinparam Class {
         BorderColor<<table>> DarkSlateGrey
         HeaderBackgroundColor<<table>> LightSteelBlue
+        FontStyle Bold
         BackgroundColor<<table>> GhostWhite
 
         AttributeIconSize<<table>> 8
-        AttributeFontName<<table>> CODE_FONT
+        AttributeFontName<<table>> Menlo
         AttributeFontSize<<table>> 11
         AttributeFontColor<<table>> DarkSlateGrey
     }
 
     skinparam Class {
-        BorderColor<<enum>> PaleVioletRed
-        HeaderBackgroundColor<<enum>> Pink
+        BorderColor<<enum>> DarkRed
+        HeaderBackgroundColor<<enum>> IndianRed
         BackgroundColor<<enum>> LightPink
 
         AttributeIconSize<<enum>> 8
-        AttributeFontName<<enum>> CODE_FONT
+        AttributeFontName<<enum>> Menlo
         AttributeFontSize<<enum>> 11
         AttributeFontColor<<enum>> DarkSlateGrey
     }
-!enddefinelong
+!endprocedure
 
-' macros for ERD
+!procedure $apply_generic_styles()
+    ' intentionally left blank
+!endprocedure
+
+
+' ===
+' Library Macros/Procs
+' ===
+
+!procedure $setup_std_diagram_for($style_name)
+    !$diagram_style_proc_name = "$apply_" + $style_name + "_styles"
+    !assert %function_exists($diagram_style_proc_name) : "Could not apply styles for '" + $style_name + "'. Typo?"
+
+    $apply_std_style()
+    %invoke_procedure($diagram_style_proc_name)
+    $add_std_info()
+!endprocedure
+
 !define PK_TYPE INTEGER(11)
 
 !define table(name) entity name<<table>>

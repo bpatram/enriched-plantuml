@@ -4,48 +4,76 @@ Enriched PlantUML is a library for PlantUML to enhance the default appearance of
 
 Features:
 
-- Improved default styling for standard diagram types
-- Additional macros for common formatting adjustments
-- Insert formatted title blocks
-- Insert company copyrights and confidentiality notices
-- Macros for entity-relationship diagrams (ERD)
+-   Improved default styling for standard diagram types
+-   Additional macros for common formatting adjustments
+-   Insert formatted title blocks
+-   Insert company copyrights and confidentiality notices
+-   Macros for entity-relationship diagrams (ERD)
 
 ## Getting Started
 
-At the top of your PlantUML file, you need to include `enriched.puml`.
+At the top of your PlantUML file, you need to include `enriched.puml`. By default, nothing will immediately happen to your diagram, you must opt-in to applying individual features. To easily bootstrap a new diagram to apply the correct styles and insert document information, copyright, and confidentiality notices you can call `$setup_std_diagram_for("<diagram type>")`. The beginning of your diagram should look something like this:
 
 ```puml
-!includeurl https://raw.githubusercontent.com/bpatram/enriched-plantuml/master/enriched.puml
+!include_once https://raw.githubusercontent.com/bpatram/enriched-plantuml/master/enriched.puml
+
+!$title = "My Diagram"
+!$company_name = "ACME Corp"
+!$author_name = "John Smith"
+!$revision_name = "1"
+
+$setup_std_diagram_for("<diagram-type>")
 ```
 
-By default, nothing will immediately happen to your diagram, you must opt-in to applying individual features. Please read the sections below which go into more details for each of the features that you can opt-in to using.
+### Styling
 
-### Applying styles
+When calling `$setup_std_diagram_for` you must pass in a diagram type name as the first argument in order to apply the correct styles for that diagram type. The current possible diagram types you can style are:
 
-Add `USE_DEFAULT_STYLES()` into your diagram to style Component, Sequence, Activity, and Class Diagrams. See ERD section below for adding styles for ER diagrams.
+-   `$setup_std_diagram_for("sequence")`
+-   `$setup_std_diagram_for("activity")`
+-   `$setup_std_diagram_for("sequence")`
+-   `$setup_std_diagram_for("state")`
+-   `$setup_std_diagram_for("class")`
+-   `$setup_std_diagram_for("er")`
+-   `$setup_std_diagram_for("generic")`
 
-#### Additional formatting helpers
+### Formatting helpers
 
-If you would like to opt-in to word wrapping of notes, descriptions and arrow lines you can add `USE_WORD_WRAP()`. This will default to 125 characters, you can change this by passing a parameter, for example: `USE_WORD_WRAP(100)`
+-   `$use_word_wrap()`: Apply word wrapping to text within boxes and titles
+-   `$use_horizontal_layout()`: Rotate the layout of all directions to be horizontal
 
 ### Inserting title blocks
 
-To stamp your diagram with your name, company, and a revision number you can add `header STD_HEADER` into your diagram. To set your name simply add `!define AUTHOR_NAME First Last` to your diagram and replace "First Last" with your own name. To set a company name add `!define COMPANY_NAME Company Name` to your diagram and replace "Company Name" with your own company name.
+When calling `$setup_std_diagram_for` it will attempt to insert a title block for you. You must define these variables _before_ making that call for it to work correctly.
+
+You'll want to define the following:
+
+-   `!$author_name = "Your Name"`
+-   `!$revision_name = "Rev. 1"` (optional)
 
 ### Inserting copyright and confidentiality notices
 
-To stamp your diagram with a confidential notice you can add `footer STD_FOOTER` into your diagram. To set a company name add `!define COMPANY_NAME Company Name` to your diagram and replace "Company Name" with your own company name.
+When calling `$setup_std_diagram_for` it will attempt to insert a footer with company information and to identify if your diagram is confidential or not. When you define these variables it must be done _before_ making the call to `$setup_std_diagram_for`.
+
+You can insert the name of your company or employer by defining the $company_name variable:
+
+```puml
+!$company_name = "Your Company"
+```
+
+By default, all diagrams are marked as confidential. To mark your diagram as not confidential:
+
+```puml
+!$confidential = %false()
+```
 
 ### Entity-relationship diagrams
 
-Due to some styling conflicts and limitations from Plantuml we must also append `USE_ERD_STYLES()` after adding `USE_DEFAULT_STYLES()` to correctly style ER diagrams without breaking existing Class Diagrams.
+When building ER diagrams you'll want to make sure your diagram type is `"er"` when calling `$setup_std_diagram_for` to ensure styles are applied correctly.
 
 A new object type is added called `table`. You can use it like this:
 
 ```puml
-USE_DEFAULT_STYLES()
-USE_ERD_STYLES()
-
 enum_mapping(REPORT_STATUS_ENUM, INT(11)) {
     incomplete: 0
     complete: 1
