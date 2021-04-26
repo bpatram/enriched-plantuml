@@ -549,7 +549,7 @@
 ' Library Macros/Procs
 ' ===
 
-!procedure $setup_std_diagram_for($style_name)
+!procedure $setup_std_diagram($style_name="generic")
     !$diagram_style_proc_name = "$apply_" + $style_name + "_styles"
     !assert %function_exists($diagram_style_proc_name) : "Could not apply styles for '" + $style_name + "'. Typo?"
     $apply_std_style()

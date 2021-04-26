@@ -9,7 +9,7 @@
     !$author_name = "John Smith"
     !$revision_name = "2"
 
-    $setup_std_diagram_for("activity")
+    $setup_std_diagram("activity")
 
     |Swimlane1|
     start
@@ -39,7 +39,7 @@
     !$author_name = "John Smith"
     !$revision_name = "2"
 
-    $setup_std_diagram_for("sequence")
+    $setup_std_diagram("sequence")
 
     participant participant as Foo
     actor       actor       as Foo1
@@ -89,7 +89,7 @@
     !$author_name = "John Smith"
     !$revision_name = "2"
 
-    $setup_std_diagram_for("state")
+    $setup_std_diagram("state")
 
     state Todo<<todo>> {
         [*] --> Idle
@@ -126,7 +126,7 @@
     !$author_name = "John Smith"
     !$revision_name = "2"
 
-    $setup_std_diagram_for("class")
+    $setup_std_diagram("class")
 
     abstract class AbstractList
     abstract AbstractCollection
@@ -167,7 +167,7 @@
     !$author_name = "John Smith"
     !$revision_name = "2"
 
-    $setup_std_diagram_for("er")
+    $setup_std_diagram("er")
 
     enum_mapping(REPORT_STATUS_ENUM, INT(11)) {
         incomplete: 0
@@ -199,7 +199,7 @@
     !$author_name = "John Smith"
     !$revision_name = "2"
 
-    $setup_std_diagram_for("generic")
+    $setup_std_diagram()
 
     actor actor
     actor/ "actor/"

@@ -22,20 +22,21 @@ At the top of your PlantUML file, you need to include `enriched.puml`. By defaul
 !$author_name = "John Smith"
 !$revision_name = "1"
 
-$setup_std_diagram_for("<diagram-type>")
+$setup_std_diagram("<diagram-type>")
 ```
 
 ### Styling
 
-When calling `$setup_std_diagram_for` you must pass in a diagram type name as the first argument in order to apply the correct styles for that diagram type. The current possible diagram types you can style are:
+When calling `$setup_std_diagram` you must pass in a diagram type name as the first argument in order to apply the correct styles for that diagram type. The current possible diagram types you can style are:
 
--   `$setup_std_diagram_for("sequence")`
--   `$setup_std_diagram_for("activity")`
--   `$setup_std_diagram_for("sequence")`
--   `$setup_std_diagram_for("state")`
--   `$setup_std_diagram_for("class")`
--   `$setup_std_diagram_for("er")`
--   `$setup_std_diagram_for("generic")`
+-   `$setup_std_diagram("sequence")`
+-   `$setup_std_diagram("activity")`
+-   `$setup_std_diagram("sequence")`
+-   `$setup_std_diagram("state")`
+-   `$setup_std_diagram("class")`
+-   `$setup_std_diagram("er")`
+-   `$setup_std_diagram("generic")`
+-   `$setup_std_diagram()` (same as `$setup_std_diagram("generic")`)
 
 ### Formatting helpers
 
