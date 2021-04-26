@@ -117,7 +117,7 @@
     !return $theme_data[$key]
 !endfunction
 
-!procedure $apply_std_style()
+!procedure $apply_base_styles()
     skinparam actorStyle awesome
     skinparam backgroundcolor $get_themed_value("canvasBackgroundColor")
     skinparam shadowing false
@@ -540,6 +540,10 @@
     }
 !endprocedure
 
+!procedure $apply_usecase_styles()
+    ' intentionally left blank
+!endprocedure
+
 !procedure $apply_generic_styles()
     ' intentionally left blank
 !endprocedure
@@ -552,7 +556,7 @@
 !procedure $setup_std_diagram($style_name="generic")
     !$diagram_style_proc_name = "$apply_" + $style_name + "_styles"
     !assert %function_exists($diagram_style_proc_name) : "Could not apply styles for '" + $style_name + "'. Typo?"
-    $apply_std_style()
+    $apply_base_styles()
     %invoke_procedure($diagram_style_proc_name)
     $add_std_info()
 !endprocedure
