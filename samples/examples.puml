@@ -53,18 +53,26 @@
     end box
 
     Foo -> Foo1 : To actor
+
     alt Alt
         Foo -> Foo2 : To boundary
-        activate Foo2
     end
+
     group group
         Foo -> Foo3 : To control
-        activate Foo3
     end
-    note left: Left note
+
+    note left : Left note
+
     ref over Foo : Reference
-    Foo -> Foo4 : To entity
-    deactivate Foo2
+
+
+    loop looping
+        Foo -> Foo4 : To entity
+    end
+
+    hnote right : Hex note
+
     ... Delay ...
     Foo -> Foo5 : To database
     == Section Title ==
@@ -95,7 +103,7 @@
         NewValuePreview --> NewValueSelection : EvNewValueRejected
         NewValuePreview --> NewValueSelection : EvNewValueSaved
 
-        state NewValuePreview {
+        state NewValuePreview<<composite>> {
             State1 -> State2
         }
         ||
@@ -152,7 +160,7 @@
     }
 @enduml
 
-@startuml example_erd
+@startuml example_er
     !include_once ../enriched.puml
     !$title = "ER Diagram Styling"
     !$company_name = "ACME Corp"
@@ -182,4 +190,57 @@
     }
 
     has_one(items_progress_report_caches, items)
+@enduml
+
+@startuml example_generic
+    !include_once ../enriched.puml
+    !$title = "Generic Diagram Styling"
+    !$company_name = "ACME Corp"
+    !$author_name = "John Smith"
+    !$revision_name = "2"
+
+    $setup_std_diagram_for("generic")
+
+    actor actor
+    actor/ "actor/"
+    agent agent
+    artifact artifact
+    boundary boundary
+    card card
+    circle circle
+    cloud cloud
+    collections collections
+    component component
+    control control
+    database database
+    entity entity
+    file file
+    folder folder [
+        folder description text
+    ]
+    frame frame
+    hexagon hexagon
+    interface interface
+    label label
+    node node<<sterotype>> [
+        node description text
+    ]
+    package package<<sterotype>> [
+        description text
+    ]
+    person person
+    queue queue
+    rectangle rectangle
+    stack stack
+    storage storage
+    usecase usecase [
+        description text
+    ]
+    usecase/ "usecase/"
+
+    legend left
+        Legend text
+    end legend
+
+    note "Note text" as note1
 @enduml

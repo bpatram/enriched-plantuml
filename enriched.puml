@@ -3,47 +3,80 @@
 ' ===
 
 !$today = %date("yyyy-MM-dd")
-!$confidential = %true()
-!$title = "[Untitled] (set $title)"
-!$hide_meta = %false()
+!$confidential ?= %true()
+!$hide_meta ?= %false()
+!$theme_data ?= {
+    "textFont": "Helvetica",
+    "codeFont": "Menlo",
+    "canvasBackgroundColor": "White",
+    "titleFontSize": 16,
+    "subtitleFontSize": 14,
+    "headerBackgroundColor": "LightSteelBlue",
+    "headerFontColor": "Black",
+    "headerFontStyle": "Bold",
+    "headerFontSize": 13,
+    "bodyBackgroundColor": "GhostWhite",
+    "bodyFontColor": "DarkSlateGrey",
+    "bodyFontSize": 12,
+    "labelFontColor": "Black",
+    "infoFontSize": 10,
+    "enum_headerBackgroundColor": "IndianRed",
+    "enum_bodyBackgroundColor": "LightPink",
+    "enum_borderColor": "DarkRed",
+    "sequenceDivider_headerBackgroundColor": "Khaki",
+    "sequenceDivider_borderColor": "Olive",
+    "note_bodyBackgroundColor": "Khaki",
+    "note_borderColor": "Olive",
+    "note_bodyFontSize": 10,
+    "legend_bodyBackgroundColor": "GhostWhite",
+    "legend_borderColor": "LightGrey",
+    "symbol_borderThickness": 1.5,
+    "borderColor": "DarkSlateGrey",
+    "arrowColor": "Black",
+    "borderThickness": 1.5
+}
+
+' !$title = "[Untitled] (set $title)"
 ' !$revision_name = "1"
 ' !$author_name = "Your Name"
 ' !$company_name = "Where you work"
 
 !procedure $add_std_header()
     !$header = ""
-    !if (%variable_exists("$author_name"))
+    !if %variable_exists("$author_name")
         !$header = $header + "Author: " + $author_name + "\n"
     !endif
-    !if (%variable_exists("$revision_name"))
+    !if %variable_exists("$revision_name") && %variable_exists("$title")
         !$header = $header + $title + " Rev. " + $revision_name + "\n"
     !endif
 
     !$header = $header + "Rendered on " + $today
 
-    !if ($hide_meta == %false())
-        header "$header"
+    !if %not($hide_meta)
+        header $header
     !endif
 !endprocedure
 
 !procedure $add_std_footer()
     !$footer = ""
-    !if ($confidential == %true())
-        skinparam FooterFontColor red
-        !$footer = $footer + "Confidential"
+    !if %variable_exists("$company_name")
+        !$footer = $footer + $company_name
     !endif
-    !if (%variable_exists("$company_name"))
-        !$footer = $footer + " - " + $company_name
+    !if $confidential == %true()
+        !if %strlen($footer) > 0
+            !$footer = $footer + " - "
+        !endif
+        !$footer = $footer + "<color:red>Confidential</color>"
     !endif
 
-    !if ($hide_meta == %false())
-        footer "\n$footer"
+    !if %not($hide_meta)
+        footer \n$footer
     !endif
 !endprocedure
 
 !procedure $add_std_title()
-    !if ($hide_meta == %false())
-        title "$title"
+    !if %not($hide_meta) && %variable_exists("$title")
+        title $title
     !endif
 !endprocedure
 
@@ -53,8 +86,9 @@
     $add_std_title()
 !endprocedure
 
+
 ' ===
-' Styling Helpers
+' Styling/Layout Helpers
 ' ===
 
 !procedure $use_word_wrap($width = 125)
@@ -68,112 +102,283 @@
 !endprocedure
 
 ' ===
-' Styling
+' Styling/Theming
 ' ===
+
+!function $get_themed_value($key, $prefix="")
+    ' TODO: add assert for key existence (once plantuml adds ability to check)
+    ' TODO: fallback to unprefixed key value if no key exists with prefix
+
+    !if %strlen($prefix) > 0
+        !$prefixed_key = $prefix + "_" + $key
+        !return $theme_data[$prefixed_key]
+    !endif
+
+    !return $theme_data[$key]
+!endfunction
 
 !procedure $apply_std_style()
     skinparam actorStyle awesome
-    skinparam arrowColor Black
+    skinparam backgroundcolor $get_themed_value("canvasBackgroundColor")
     skinparam shadowing false
     skinparam padding 2
-    skinparam defaultFontName Helvetica
-    skinparam roundCorner 3
+    skinparam defaultFontName $get_themed_value("textFont")
+    skinparam defaultMonospacedFontName $get_themed_value("codeFont")
+    skinparam defaultFontSize $get_themed_value("bodyFontSize")
+    skinparam roundCorner 5
+
+    skinparam Title {
+        FontSize $get_themed_value("titleFontSize")
+    }
+
+    skinparam Footer {
+        FontSize $get_themed_value("infoFontSize")
+    }
+
+    skinparam Header {
+        FontSize $get_themed_value("infoFontSize")
+    }
+
+    skinparam Arrow {
+        Thickess 1
+        Color $get_themed_value("arrowColor")
+        FontColor $get_themed_value("labelFontColor")
+    }
 
     skinparam Note {
-        BackgroundColor Khaki
-        BorderColor Olive
-        BorderThickness 1
-        FontSize 9
+        BackgroundColor $get_themed_value("bodyBackgroundColor", "note")
+        BorderColor $get_themed_value("borderColor", "note")
+        BorderThickness $get_themed_value("borderThickness")
+        FontSize $get_themed_value("bodyFontSize", "note")
     }
 
     skinparam Legend {
-        BackgroundColor GhostWhite
-        BorderThickness 1
-        BorderColor LightGrey
+        FontColor $get_themed_value("bodyFontColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor", "legend")
+        BorderColor $get_themed_value("borderColor", "legend")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Label {
+        FontColor $get_themed_value("labelFontColor")
+    }
+
+    skinparam Circle {
+        FontColor $get_themed_value("labelFontColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
+    }
+
+    ' NOTE: looks like this is styling Circle
+    skinparam Interface {
+        FontColor $get_themed_value("labelFontColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Database {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        FontColor $get_themed_value("bodyFontColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        ' NOTE: BorderThickness not supported yet
+        BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Boundary {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        FontColor $get_themed_value("labelFontColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Control {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        FontColor $get_themed_value("labelFontColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Entity {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        FontColor $get_themed_value("labelFontColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Collections {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Queue {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Artifact {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Agent {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Actor {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        FontColor $get_themed_value("labelFontColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Usecase {
-        BackgroundColor GhostWhite
-        BorderColor SlateGrey
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Node {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Folder {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Component {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
+    }
+
+    skinparam Cloud {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
+    }
+
+    skinparam Frame {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
+    }
+
+    skinparam Card {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Rectangle {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Hexagon {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Storage {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Stack {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Person {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam File {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Package {
-        ' Should match Sequence.Reference styling
-        HeaderBackgroundColor LightSteelBlue
-        BorderColor LightSteelBlue
-        BorderThickness 1
-        BackgroundColor Transparent
+        BorderColor $get_themed_value("borderColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        ' NOTE: cant set the title and description differently
+        FontStyle Normal
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    skinparam Class {
+        HeaderBackgroundColor $get_themed_value("headerBackgroundColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        FontSize $get_themed_value("headerFontSize")
+        FontStyle $get_themed_value("headerFontStyle")
+        FontColor $get_themed_value("headerFontColor")
+
+        AttributeFontSize $get_themed_value("bodyFontSize")
+        AttributeFontColor $get_themed_value("bodyFontColor")
+        AttributeFontName $get_themed_value("codeFont")
+    }
+
+    skinparam State {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        FontStyle $get_themed_value("headerFontStyle")
+        FontSize $get_themed_value("headerFontSize")
+        FontColor $get_themed_value("bodyFontColor")
+
+        AttributeFontSize $get_themed_value("bodyFontSize")
+        AttributeFontColor $get_themed_value("bodyFontColor")
+
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness")
+    }
+
+    ' used in class, object, and activity diagrams
+    skinparam ActivityDiamond {
+        BackgroundColor $get_themed_value("headerBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 !endprocedure
 
 ' Diagram specific styles (should follow $apply_*_styles() naming convention)
+' Override or extend anything not already defined in the standard styles
 
 !procedure $apply_activity_styles()
     ' should mimic state styling
     skinparam Activity {
         FontStyle Normal
-        FontSize 12
-        FontColor Black
-        BackgroundColor GhostWhite
-        BorderColor DarkSlateGrey
-        BorderThickness 1
+        FontColor $get_themed_value("bodyFontColor")
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
 
         Diamond {
             FontStyle Bold
-            FontSize 12
-            FontColor Black
-            BackgroundColor LightSteelBlue
-            BorderColor DarkSlateGrey
-            BorderThickness 1
+            FontColor $get_themed_value("headerFontColor")
+            BorderThickness $get_themed_value("borderThickness")
         }
     }
 
     skinparam Swimlane {
+        TitleFontSize $get_themed_value("subtitleFontSize")
+        ' TODO: add into theme json
         BorderColor SlateGray
         BorderThickness 3
     }
@@ -186,72 +391,103 @@
 
     skinparam actorStyle stick
     skinparam style strictuml
-    skinparam BoxPadding 20
+    skinparam boxPadding 10
 
     skinparam Sequence {
         ArrowThickness 2
 
         Participant {
-            BackgroundColor GhostWhite
-            BorderColor SlateGrey
+            BackgroundColor $get_themed_value("bodyBackgroundColor")
+            BorderColor $get_themed_value("borderColor")
+            ' use border consistent with other sequence symbols
+            BorderThickness $get_themed_value("borderThickness", "symbol")
         }
 
         LifeLine {
-            BorderColor SlateGrey
-            BackgroundColor LightSteelBlue
+            BorderColor $get_themed_value("headerBackgroundColor")
+            BackgroundColor $get_themed_value("bodyBackgroundColor")
         }
 
         Box {
+            ' TODO: use a lighter color, put into theme json
             BackgroundColor GhostWhite
-            BorderColor DarkGrey
+            BorderColor $get_themed_value("borderColor")
+            ' NOTE: border thickness not supported on box
+            BorderThickness $get_themed_value("borderThickness")
+        }
+
+        Delay {
+            FontColor $get_themed_value("labelFontColor")
+            FontStyle Italic
         }
 
         Group {
-            ' Should match Reference styling
-            BackgroundColor LightSteelBlue
-            BorderColor DarkSlateGrey
-            BorderThickness 1
+            BackgroundColor $get_themed_value("headerBackgroundColor")
+            BorderColor $get_themed_value("borderColor")
+            BorderThickness $get_themed_value("borderThickness")
             BodyBackgroundColor Transparent
         }
 
         Reference {
-            ' Should match Group styling
-            HeaderBackgroundColor LightSteelBlue
-            BorderColor DarkSlateGrey
-            BorderThickness 1
+            HeaderBackgroundColor $get_themed_value("headerBackgroundColor")
+            BorderColor $get_themed_value("borderColor")
+            BorderThickness $get_themed_value("borderThickness")
             BodyBackgroundColor Transparent
         }
 
         Divider {
-            BackgroundColor Khaki
-            BorderColor Olive
+            BackgroundColor $get_themed_value("headerBackgroundColor", "sequenceDivider")
+            BorderColor $get_themed_value("borderColor", "sequenceDivider")
+            BorderThickness 1
+            FontStyle Bold
         }
+
+    }
+
+    skinparam Database {
+        ' sequence shows databases as a symbol instead of a container with stuff inside
+        FontColor $get_themed_value("labelFontColor")
+        ' NOTE: BorderThickness not supported yet
+        BorderThickness $get_themed_value("borderThickness", "symbol")
+    }
+
+    skinparam Queue {
+        ' sequence shows databases as a symbol instead of a container with stuff inside
+        FontColor $get_themed_value("labelFontColor")
+        BorderThickness $get_themed_value("borderThickness", "symbol")
+    }
+
+    skinparam Collections {
+        ' use border consistent with other sequence symbols
+        BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 !endprocedure
 
 !procedure $apply_state_styles()
     hide empty description
 
-    ' should mimick activity styling
-    skinparam State {
-        BackgroundColor GhostWhite
-        BorderColor DarkSlateGrey
-        FontColor Black
-        FontStyle Bold
-        FontSize 12
-        AttributeFontSize 11
-        AttributeFontColor DarkSlateGrey
-        BorderThickness 1
+    skinparam State<<composite>> {
+        BackgroundColor $get_themed_value("headerBackgroundColor")
+        FontStyle $get_themed_value("headerFontStyle")
+        FontSize $get_themed_value("headerFontSize")
+        FontColor $get_themed_value("headerFontColor")
+    }
 
+    skinparam State {
+        ' TODO: add these into theme?
         BackgroundColor<<todo>> RoyalBlue
         BorderColor<<todo>> MediumBlue
         FontColor<<todo>> White
         AttributeFontColor<<todo>> White
+    }
 
+    skinparam State {
         BackgroundColor<<inprogress>> Gold
         BorderColor<<inprogress>> GoldenRod
         AttributeFontColor<<inprogress>> Black
+    }
 
+    skinparam State {
         BackgroundColor<<done>> ForestGreen
         BorderColor<<done>> DarkGreen
         FontColor<<done>> White
@@ -260,25 +496,23 @@
 !endprocedure
 
 !procedure $apply_class_styles()
-    skinparam packageStyle Frame
+    set namespaceSeparator ::
 
-    skinparam Class {
-        HeaderBackgroundColor LightSteelBlue
-        BackgroundColor GhostWhite
-        BorderColor DarkSlateGrey
+    skinparam Package {
+        Style Rectangle
         FontStyle Bold
-        FontSize 12
-        FontColor Black
-
-        AttributeFontSize 11
-        AttributeFontColor DarkSlateGrey
     }
 
     skinparam Stereotype {
         C {
-            BackgroundColor GhostWhite
-            BorderColor DarkSlateGrey
+            BackgroundColor $get_themed_value("bodyBackgroundColor")
+            BorderColor $get_themed_value("borderColor")
         }
+    }
+
+    ' NOTE: this is styling Circle (bug in plantuml)
+    skinparam Interface {
+        BackgroundColor $get_themed_value("headerBackgroundColor")
     }
 !endprocedure
 
@@ -288,28 +522,21 @@
     hide empty members
     hide stereotype
 
-    ' not sure why, but it seems entity uses the Class styles?
-    skinparam Class {
-        BorderColor<<table>> DarkSlateGrey
-        HeaderBackgroundColor<<table>> LightSteelBlue
+    skinparam Package {
+        Style Frame
         FontStyle Bold
-        BackgroundColor<<table>> GhostWhite
-
-        AttributeIconSize<<table>> 8
-        AttributeFontName<<table>> Menlo
-        AttributeFontSize<<table>> 11
-        AttributeFontColor<<table>> DarkSlateGrey
     }
 
     skinparam Class {
-        BorderColor<<enum>> DarkRed
-        HeaderBackgroundColor<<enum>> IndianRed
-        BackgroundColor<<enum>> LightPink
+        AttributeFontName<<table>> $get_themed_value("codeFont")
+    }
 
-        AttributeIconSize<<enum>> 8
-        AttributeFontName<<enum>> Menlo
-        AttributeFontSize<<enum>> 11
-        AttributeFontColor<<enum>> DarkSlateGrey
+    skinparam Class {
+        BorderColor<<enum>> $get_themed_value("borderColor", "enum")
+        HeaderBackgroundColor<<enum>> $get_themed_value("headerBackgroundColor", "enum")
+        BackgroundColor<<enum>> $get_themed_value("bodyBackgroundColor", "enum")
+
+        AttributeFontName<<enum>> $get_themed_value("codeFont")
     }
 !endprocedure
 
@@ -325,7 +552,6 @@
 !procedure $setup_std_diagram_for($style_name)
     !$diagram_style_proc_name = "$apply_" + $style_name + "_styles"
     !assert %function_exists($diagram_style_proc_name) : "Could not apply styles for '" + $style_name + "'. Typo?"
-
     $apply_std_style()
     %invoke_procedure($diagram_style_proc_name)
     $add_std_info()
