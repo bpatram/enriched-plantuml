@@ -132,6 +132,8 @@
     abstract AbstractCollection
     interface List
     interface Collection
+    circle a_circle
+    diamond a_diamond
 
     List <|-- AbstractList
     Collection <|-- AbstractCollection
@@ -145,18 +147,22 @@
         size()
     }
 
+    foo ()- ArrayList
+
     enum TimeUnit {
         DAYS
         HOURS
         MINUTES
     }
 
-    annotation SuppressWarnings
+    package MyPackage {
+        annotation SuppressWarnings
 
-    annotation Annotation {
-        annotation with members
-        String foo()
-        String bar()
+        annotation Annotation {
+            annotation with members
+            String foo()
+            String bar()
+        }
     }
 @enduml
 
@@ -175,9 +181,11 @@
         not_applicable: 2
     }
 
-    table(items) {
-        column_pk()
-        omitted_columns()
+    package Items {
+        table(items) {
+            column_pk()
+            omitted_columns()
+        }
     }
 
     table(items_progress_report_caches) {
@@ -271,4 +279,36 @@
     g --> UC1
     g --> UC2
     g --> UC3
+@enduml
+
+@startuml example_object
+    !include_once ../enriched.puml
+    !$title = "Generic Object Styling"
+    !$company_name = "ACME Corp"
+    !$author_name = "John Smith"
+    !$revision_name = "2"
+
+    $setup_std_diagram("object")
+
+    package Package {
+
+    }
+
+    object London<<city>>
+    object Washington<<state>>
+    object NewYork {
+        NY State
+    }
+    diamond dia
+    circle circ
+
+    map "Map **Contry => CapitalCity**" as CapitalCity {
+        UK *-> London
+        USA => Washington
+        Germany => Berlin
+    }
+
+    NewYork --> dia
+    Washington --> dia
+    dia --> CapitalCity::USA
 @enduml
