@@ -350,6 +350,17 @@
         BorderThickness $get_themed_value("borderThickness")
     }
 
+    skinparam Object {
+        BackgroundColor $get_themed_value("bodyBackgroundColor")
+        BorderColor $get_themed_value("borderColor")
+        FontSize $get_themed_value("headerFontSize")
+        FontStyle $get_themed_value("headerFontStyle")
+        FontColor $get_themed_value("headerFontColor")
+
+        AttributeFontSize $get_themed_value("bodyFontSize")
+        AttributeFontColor $get_themed_value("bodyFontColor")
+    }
+
     ' used in class, object, and activity diagrams
     skinparam ActivityDiamond {
         BackgroundColor $get_themed_value("headerBackgroundColor")
@@ -542,6 +553,14 @@
 
 !procedure $apply_usecase_styles()
     ' intentionally left blank
+!endprocedure
+
+!procedure $apply_object_styles()
+    ' object diagrams are pretty much class diagrams
+    $apply_class_styles()
+
+    hide circle
+    set namespaceSeparator none
 !endprocedure
 
 !procedure $apply_generic_styles()
