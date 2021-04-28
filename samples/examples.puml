@@ -264,7 +264,7 @@
 
     actor Guest as g
     package Professional {
-    actor Chef as c
+        actor Chef as c
         actor "Food Critic" as fc
     }
 
@@ -291,6 +291,10 @@
     $setup_std_diagram("object")
 
     package Package {
+
+    }
+
+    namespace Namespace {
 
     }
 
