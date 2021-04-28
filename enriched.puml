@@ -532,6 +532,7 @@
     hide circle
     hide empty members
     hide stereotype
+    skinparam linetype ortho
 
     skinparam Package {
         Style Frame
