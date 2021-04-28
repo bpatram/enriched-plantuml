@@ -567,6 +567,10 @@
     ' intentionally left blank
 !endprocedure
 
+!procedure $apply_deployment_styles()
+    ' intentionally left blank
+!endprocedure
+
 
 ' ===
 ' Library Macros/Procs
