@@ -373,6 +373,9 @@
 ' Override or extend anything not already defined in the standard styles
 
 !procedure $apply_activity_styles()
+    ' hide merge diamonds
+    skinparam ConditionEndStyle hline
+
     ' should mimic state styling
     skinparam Activity {
         FontStyle Normal
