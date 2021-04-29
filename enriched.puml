@@ -636,14 +636,22 @@
 
 !define table(name) entity name<<table>>
 !define enum_mapping(name, type) enum name<type><<enum>>
+!define poly_assoc(name) abstract name<polymorphic>
 !define enum_value(name, value) {field} - <b>name</b>: value
 
 !define has_one(from, to) from }--|| to
+!define has_one_poly(from, to) from }-- to
+!define poly_can_be(from, to) from --|| to
+!define has_one_to_one(from, to) from ||--|| to
 !define has_many(from, to) from }--{ to
 !define column_pk(name = "id") {field} {static}{method} # <b>name</b>: PK_TYPE
 !define column_pk(name = "id", type) {static}{method} # <b>name</b>: type
 !define column_fk(name) {method} + <b>name</b>: PK_TYPE
 !define column_fk(name, type) {method} + <b>name</b>: type
+!definelong column_fk_poly(name, type_type="VARCHAR", id_suffix = "_id", type_suffix = "_type")
+    {method} + <b>name##id_suffix</b>: PK_TYPE
+    {field} + <b>name##type_suffix</b>: type_type
+!enddefinelong
 !define column_non_nullable(name, type) {field} + <b>name</b>: type
 !define column_nullable(name, type) {field} + <b>name</b>: type
 !define omitted_columns(name = "...") //name//

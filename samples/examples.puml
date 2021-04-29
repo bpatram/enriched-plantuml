@@ -181,23 +181,46 @@
         enum_value(not_applicable, 2)
     }
 
-    package Items {
+    frame Items {
+        table(items_progress_report_caches) {
+            ---
+            column_pk()
+            timestamps()
+            column_fk(item_id)
+            column_non_nullable(photos_uploaded, REPORT_STATUS_ENUM)
+            column_non_nullable(photo_editing_work, REPORT_STATUS_ENUM)
+        }
+
         table(items) {
+            ---
             column_pk()
             omitted_columns()
+            column_fk_poly(ownable)
         }
     }
 
-    table(items_progress_report_caches) {
-        column_pk()
-        timestamps()
-        column_fk(item_id)
+    poly_assoc(ownable)
 
-        column_non_nullable(photos_uploaded, REPORT_STATUS_ENUM)
-        column_non_nullable(photo_editing_work, REPORT_STATUS_ENUM)
+    table(users) {
+        ---
+        column_pk()
     }
 
+    table(organizations) {
+        ---
+        column_pk()
+    }
+
+
+
     has_one(items_progress_report_caches, items)
+    has_one_poly(items, ownable)
+    poly_can_be(ownable, users)
+    poly_can_be(ownable, organizations)
+
+    note right of items::id
+        test
+    end note
 @enduml
 
 @startuml example_generic
