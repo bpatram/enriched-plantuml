@@ -176,9 +176,9 @@
     $setup_std_diagram("er")
 
     enum_mapping(REPORT_STATUS_ENUM, INT(11)) {
-        incomplete: 0
-        complete: 1
-        not_applicable: 2
+        enum_value(incomplete, 0)
+        enum_value(complete, 1)
+        enum_value(not_applicable, 2)
     }
 
     package Items {

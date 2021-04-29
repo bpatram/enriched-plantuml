@@ -606,6 +606,7 @@
 
 !define table(name) entity name<<table>>
 !define enum_mapping(name, type) enum name<type><<enum>>
+!define enum_value(name, value) {field} - <b>name</b>: value
 
 !define has_one(from, to) from }--|| to
 !define has_many(from, to) from }--{ to
