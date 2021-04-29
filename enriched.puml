@@ -532,6 +532,9 @@
 !endprocedure
 
 !procedure $apply_er_styles()
+    ' ER diagrams are pretty much class diagrams
+    $apply_class_styles()
+
     ' https://github.com/plantuml/plantuml/pull/31
     hide circle
     hide empty members
@@ -606,12 +609,12 @@
 
 !define has_one(from, to) from }--|| to
 !define has_many(from, to) from }--{ to
-!define column_pk(name = "id") # name: PK_TYPE
-!define column_pk(name = "id", type) # name: type
-!define column_fk(name) + name: PK_TYPE
-!define column_fk(name, type) + name: type
-!define column_non_nullable(name, type) * name: type
-!define column_nullable(name, type) name: type
+!define column_pk(name = "id") {field} {static}{method} # <b>name</b>: PK_TYPE
+!define column_pk(name = "id", type) {static}{method} # <b>name</b>: type
+!define column_fk(name) {method} + <b>name</b>: PK_TYPE
+!define column_fk(name, type) {method} + <b>name</b>: type
+!define column_non_nullable(name, type) {field} + <b>name</b>: type
+!define column_nullable(name, type) {field} + <b>name</b>: type
 !define omitted_columns(name = "...") //name//
 
 !definelong timestamps()
