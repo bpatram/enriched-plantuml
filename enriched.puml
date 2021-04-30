@@ -149,14 +149,17 @@
 
     skinparam Note {
         BackgroundColor $get_themed_value("bodyBackgroundColor", "note")
+
+        FontSize $get_themed_value("bodyFontSize", "note")
+
         BorderColor $get_themed_value("borderColor", "note")
         BorderThickness $get_themed_value("borderThickness")
-        FontSize $get_themed_value("bodyFontSize", "note")
     }
 
     skinparam Legend {
         FontColor $get_themed_value("bodyFontColor")
         BackgroundColor $get_themed_value("bodyBackgroundColor", "legend")
+
         BorderColor $get_themed_value("borderColor", "legend")
         BorderThickness $get_themed_value("borderThickness")
     }
@@ -168,6 +171,7 @@
     skinparam Circle {
         FontColor $get_themed_value("labelFontColor")
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness", "symbol")
     }
@@ -176,6 +180,7 @@
     skinparam Interface {
         FontColor $get_themed_value("labelFontColor")
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness", "symbol")
     }
@@ -183,6 +188,7 @@
     skinparam Database {
         FontColor $get_themed_value("bodyFontColor")
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         ' NOTE: BorderThickness not supported yet
         BorderThickness $get_themed_value("borderThickness")
@@ -191,6 +197,7 @@
     skinparam Boundary {
         FontColor $get_themed_value("labelFontColor")
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness", "symbol")
     }
@@ -198,6 +205,7 @@
     skinparam Control {
         FontColor $get_themed_value("labelFontColor")
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness", "symbol")
     }
@@ -205,123 +213,145 @@
     skinparam Entity {
         FontColor $get_themed_value("labelFontColor")
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Collections {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Queue {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Artifact {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Agent {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Actor {
-        FontColor $get_themed_value("labelFontColor")
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
+        FontColor $get_themed_value("labelFontColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Package {
-        BorderColor $get_themed_value("borderColor")
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         ' NOTE: cant set the title and description differently
         FontStyle Normal
+
+        BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Usecase {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Node {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Folder {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Component {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Cloud {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Frame {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness", "symbol")
     }
 
     skinparam Card {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Rectangle {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Hexagon {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Storage {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Stack {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam Person {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
 
     skinparam File {
         BackgroundColor $get_themed_value("bodyBackgroundColor")
+
         BorderColor $get_themed_value("borderColor")
         BorderThickness $get_themed_value("borderThickness")
     }
