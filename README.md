@@ -74,39 +74,127 @@ By default, all diagrams are marked as confidential. To mark your diagram as not
 
 When building ER diagrams you'll want to make sure your diagram type is `"er"` when calling `$setup_std_diagram` to ensure styles are applied correctly.
 
-A new object type is added called `table`. You can use it like this:
+#### Tables
+
+To define a new table, use the `table` object. To set the table name pass it in as the first argument. Within your tables you can use additional macros to define the columns or fields on your table.
 
 ```puml
-enum_mapping(REPORT_STATUS_ENUM, INT(11)) {
-    incomplete: 0
-    complete: 1
-    not_applicable: 2
+table(your_table_name) {
+    ---
+    ' define your fields...
+}
+```
+
+#### Fields
+
+In most databases the identifier or reference columns use the same datatype across all tables. By default primary and foreign keys are assumed to be an INTEGER(11) datatype, however you can change this behavior by overwriting `PK_TYPE` value to something else. If you use UUIDs for example you will want to do something like this:
+
+```puml
+!define PK_TYPE UUID
+```
+
+Define a primary key field within your table using `column_pk()`. By default the field will be called 'id' but you can override this behavior by passing in a new name as the first argument. If its datatype differs from `PK_TYPE` (`INTEGER(11)` by default) you can define a new datatype by passing a second argument.
+
+```puml
+' to create a PK named 'id'
+column_pk()
+
+' or with a custom field name
+column_pk('identifier')
+
+' or with a custom datatype
+column_pk('id', 'UUID')
+```
+
+Define a foreign key field within your table using `column_fk()`. You'll need to define the column name by passing in a name as the first argument. If its datatype differs from `PK_TYPE` (`INTEGER(11)` by default) you can define a new datatype by passing a second argument.
+
+```puml
+' to create a FK named 'other_table_id'
+column_fk(other_table_id)
+
+' or with a custom datatype
+column_fk(other_table_id, 'UUID')
+```
+
+Define an ordinary field with either `column_non_nullable()` or `column_nullable()`. The first argument sets the column name and the second argument set its datatype.
+
+```puml
+' to create a non-nullable field
+column_non_nullable(column_name, 'DATETIME')
+
+' to create a nullable field
+column_nullable(column_name, 'DATETIME')
+```
+
+When making diagrams which only highlights a specific area of concern of your schema you may want to only need to partially define your tables. There is a handy macro, `omitted_columns()` to indicate that you are omitting some fields on your table.
+
+In most applications it is common to include some additional fields on your table to store "created_at" and "updated_at" timestamps. Instead of having to declare these fields on your table separately, you can instead simply use the `timestamps()` macro.
+
+#### Relationships
+
+To define a many to one relationship use `has_one()`.
+To define a many to many relationship use `has_many()`.
+
+```puml
+table(books) {
+    ---
+    column_pk()
+    column_fk(author_id)
 }
 
+table(authors) {
+    ---
+    column_pk()
+}
+
+has_one(books, authors)
+```
+
+#### Polymorphic Relationships
+
+Polymorphic relationships are a non-standard concept when talking about modeling a data schema. However, most ORMs support this type of relationship so modeling them in your ER diagrams is a common challenge/ Since a polymorphic relationship represents a relationship to differing tables we can represent the polymorphic relationship as an intermediate object between the table containing the foreign key and the tables that it could possibly be referencing. Below is a complete example to show how this works in practice.
+
+Define a polymorphic foreign key and foreign key type fields on your table via `column_fk_poly()`. Define your polymorphic relationship intermediate object via `poly_assoc()`.
+Relate your table with the polymorphic fields to the intermediate object via `has_one_poly()`.
+Define the tables that your polymorphic relationship could reference via `poly_can_be()`.
+
+```puml
 table(items) {
+    ---
+    column_pk()
+
+    column_fk_poly(ownable)
+}
+
+poly_assoc(ownable)
+
+table(users) {
+    ---
     column_pk()
     omitted_columns()
 }
 
-table(items_progress_report_caches) {
+table(companies) {
+    ---
     column_pk()
-    timestamps()
-    column_fk(item_id)
-
-    column_non_nullable(photos_uploaded, REPORT_STATUS_ENUM)
-    column_non_nullable(photo_editing_work, REPORT_STATUS_ENUM)
-    column_non_nullable(attribution_work, REPORT_STATUS_ENUM)
-    column_non_nullable(remote_cataloging_work, REPORT_STATUS_ENUM)
-    column_non_nullable(required_attributes_defined, REPORT_STATUS_ENUM)
-    column_non_nullable(description_defined, REPORT_STATUS_ENUM)
-    column_non_nullable(contract_defined, REPORT_STATUS_ENUM)
-    column_non_nullable(condition_defined, REPORT_STATUS_ENUM)
-    column_non_nullable(measurements_defined, REPORT_STATUS_ENUM)
-    column_non_nullable(active, REPORT_STATUS_ENUM)
-    column_non_nullable(origin_type_defined, REPORT_STATUS_ENUM)
-    column_non_nullable(parcels_created, REPORT_STATUS_ENUM)
-    column_non_nullable(editing_completed, REPORT_STATUS_ENUM)
+    omitted_columns()
 }
 
-has_one(items_progress_report_caches, items)
+has_one_poly(items, ownable)
+poly_can_be(ownable, users)
+poly_can_be(ownable, companies)
+
+```
+
+#### Enums
+
+To represent enums in your schema, you can define an `enum_mapping` object. Pass in the enum name and its datatype as the first and second arguments. It appears similar to a table in your diagram but will be styled a bit differently and will contain the values of your enum.
+
+To define your enum values use `enum_value()` and pass the name and value as the first and second arguments.
+
+```puml
+enum_mapping(MY_ENUM_NAME, INTEGER) {
+    enum_value(my_value_one, 1)
+    enum_value(my_value_two, 2)
+}
 ```
