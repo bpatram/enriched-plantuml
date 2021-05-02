@@ -651,6 +651,14 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
     Entity $name<<table>>
 !endprocedure
 
+!unquoted procedure PartialTable($name)
+    Table($name)<<partial>> {
+        ---
+        table_pk()
+        omitted_columns()
+    }
+!endprocedure
+
 !unquoted procedure EnumType($name, $type)
     Enum $name<$type><<enum>>
 !endprocedure
