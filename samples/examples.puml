@@ -151,14 +151,14 @@
     Enrich("er", $title="Entity Relationship Diagram Styling", $confidential=%false())
     SET_SCHEMA_DEFAULTS($id_type="UUID")
 
-    enum_mapping(REPORT_STATUS_ENUM, INT(11)) {
+    EnumType(REPORT_STATUS_ENUM, "INT(11)") {
         enum_value(incomplete, 0)
         enum_value(complete, 1)
         enum_value(not_applicable, 2)
     }
 
-    frame Items {
-        table(items_progress_report_caches) {
+    Frame Items {
+        Table(items_progress_report_caches) {
             ---
             column_pk()
             timestamps()
@@ -167,7 +167,7 @@
             column_non_nullable(photo_editing_work, REPORT_STATUS_ENUM)
         }
 
-        table(items) {
+        Table(items) {
             ---
             column_pk()
             omitted_columns()
@@ -177,12 +177,12 @@
 
     poly_assoc(ownable)
 
-    table(users) {
+    Table(users) {
         ---
         column_pk()
     }
 
-    table(organizations) {
+    Table(organizations) {
         ---
         column_pk()
     }
