@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   Use `enum_value('enum name', 'enum value')` when defining `enum` objects
+-   Ability to model polymorphic relationships in ER diagrams
 
 ### Changed
 
