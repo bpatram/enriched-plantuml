@@ -149,7 +149,7 @@
 @startuml example_er
     !include_once ../enriched.puml
     Enrich("er", $title="Entity Relationship Diagram Styling", $confidential=%false())
-    ' USE_UUIDS()
+    SET_SCHEMA_DEFAULTS($id_type="UUID")
 
     enum_mapping(REPORT_STATUS_ENUM, INT(11)) {
         enum_value(incomplete, 0)

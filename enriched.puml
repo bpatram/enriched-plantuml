@@ -622,24 +622,29 @@
     $add_title($title)
 !endprocedure
 
+
 ' ===
 ' ER Diagram Macros/Procs
 ' ===
 
-!unquoted procedure USE_ID_TYPE($type)
-    !global $ID_TYPE = $type
+!procedure SET_SCHEMA_DEFAULTS($id_type="", $poly_type_type="", $poly_id_suffix="", $poly_type_suffix="")
+    !if $id_type != ""
+        !global $ID_TYPE = %upper($id_type)
+    !endif
+    !if $poly_type_type != ""
+        !global $POLY_TYPE_TYPE = %upper($poly_type_type)
+    !endif
+    !if $poly_id_suffix != ""
+        !global $POLY_ID_SUFFIX = %upper($poly_id_suffix)
+    !endif
+    !if $poly_type_suffix != ""
+        !global $POLY_TYPE_SUFFIX = %upper($poly_type_suffix)
+    !endif
 !endprocedure
 
+SET_SCHEMA_DEFAULTS($id_type="INTEGER(11)", $poly_type_type="VARCHAR", $poly_id_suffix="_id", $poly_type_suffix="_type")
 
-!procedure USE_UUIDS()
-    USE_ID_TYPE(UUID)
-!endprocedure
-!procedure USE_SEQ_IDS()
-    USE_ID_TYPE("INTEGER(11)")
-!endprocedure
 
-' default to seq ids
-USE_SEQ_IDS()
 
 !define table(name) entity name<<table>>
 !define enum_mapping(name, type) enum name<type><<enum>>
