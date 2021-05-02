@@ -157,7 +157,7 @@
         enum_value(not_applicable, 2)
     }
 
-    Frame Items {
+    TableLayer("Items", $color="lightblue") {
         Table(items_progress_report_caches) {
             ---
             table_pk()
@@ -175,8 +175,10 @@
         }
     }
 
-    PartialTable(users)
-    PartialTable(organizations)
+    TableLayer("Identity") {
+        PartialTable(users)
+        PartialTable(organizations)
+    }
 
     has_one(items_progress_report_caches, items)
     has_one_poly(items, ownable)

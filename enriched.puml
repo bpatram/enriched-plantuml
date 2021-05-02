@@ -647,6 +647,13 @@
 
 SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARCHAR", $poly_id_suffix="_id", $poly_type_suffix="_type")
 
+!procedure TableLayer($name, $color="")
+    !if $color != ""
+        !$color = "#back:" + $color
+    !endif
+    Frame $name <<tablelayer>> $color
+!endprocedure
+
 !unquoted procedure Table($name)
     Entity $name<<table>>
 !endprocedure
