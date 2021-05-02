@@ -4,12 +4,7 @@
 
 @startuml example_activity
     !include_once ../enriched.puml
-    !$title = "Activity Diagram Styling"
-    !$company_name = "ACME Corp"
-    !$author_name = "John Smith"
-    !$revision_name = "2"
-
-    $setup_std_diagram("activity")
+    Enrich("activity", $title="Activity Diagram Styling", $confidential=%false())
 
     |Swimlane1|
     start
@@ -34,12 +29,7 @@
 
 @startuml example_sequence
     !include_once ../enriched.puml
-    !$title = "Sequence Diagram Styling"
-    !$company_name = "ACME Corp"
-    !$author_name = "John Smith"
-    !$revision_name = "2"
-
-    $setup_std_diagram("sequence")
+    Enrich("sequence", $title="Sequence Diagram Styling", $confidential=%false())
 
     participant participant as Foo
     actor       actor       as Foo1
@@ -84,12 +74,7 @@
 
 @startuml example_state
     !include_once ../enriched.puml
-    !$title = "State Diagram Styling"
-    !$company_name = "ACME Corp"
-    !$author_name = "John Smith"
-    !$revision_name = "2"
-
-    $setup_std_diagram("state")
+    Enrich("state", $title="State Diagram Styling", $confidential=%false())
 
     state Todo<<todo>> {
         [*] --> Idle
@@ -121,12 +106,7 @@
 
 @startuml example_class
     !include_once ../enriched.puml
-    !$title = "Class Diagram Styling"
-    !$company_name = "ACME Corp"
-    !$author_name = "John Smith"
-    !$revision_name = "2"
-
-    $setup_std_diagram("class")
+    Enrich("class", $title="Class Diagram Styling", $confidential=%false())
 
     abstract class AbstractList
     abstract AbstractCollection
@@ -168,12 +148,7 @@
 
 @startuml example_er
     !include_once ../enriched.puml
-    !$title = "ER Diagram Styling"
-    !$company_name = "ACME Corp"
-    !$author_name = "John Smith"
-    !$revision_name = "2"
-
-    $setup_std_diagram("er")
+    Enrich("er", $title="Entity Relationship Diagram Styling", $confidential=%false())
 
     enum_mapping(REPORT_STATUS_ENUM, INT(11)) {
         enum_value(incomplete, 0)
@@ -225,12 +200,7 @@
 
 @startuml example_generic
     !include_once ../enriched.puml
-    !$title = "Generic Diagram Styling"
-    !$company_name = "ACME Corp"
-    !$author_name = "John Smith"
-    !$revision_name = "2"
-
-    $setup_std_diagram()
+    Enrich($title="Generic Diagram Styling", $confidential=%false())
 
     actor actor
     actor/ "actor/"
@@ -278,12 +248,7 @@
 
 @startuml example_usecase
     !include_once ../enriched.puml
-    !$title = "Generic Use Case Styling"
-    !$company_name = "ACME Corp"
-    !$author_name = "John Smith"
-    !$revision_name = "2"
-
-    $setup_std_diagram("usecase")
+    Enrich("usecase", $title="Usecase Diagram Styling", $confidential=%false())
 
     actor Guest as g
     package Professional {
@@ -306,12 +271,7 @@
 
 @startuml example_object
     !include_once ../enriched.puml
-    !$title = "Generic Object Styling"
-    !$company_name = "ACME Corp"
-    !$author_name = "John Smith"
-    !$revision_name = "2"
-
-    $setup_std_diagram("object")
+    Enrich("object", $title="Object Diagram Styling", $confidential=%false())
 
     package Package {
 

@@ -3,8 +3,6 @@
 ' ===
 
 !$today = %date("yyyy-MM-dd")
-!$confidential ?= %true()
-!$hide_meta ?= %false()
 !$theme_data ?= {
     "textFont": "Helvetica",
     "codeFont": "Menlo",
@@ -37,31 +35,24 @@
     "borderThickness": 1.5
 }
 
-' !$title = "[Untitled] (set $title)"
-' !$revision_name = "1"
-' !$author_name = "Your Name"
-' !$company_name = "Where you work"
-
-!procedure $add_std_header()
+!procedure $add_header($author="", $revision="", $title="")
     !$header = ""
-    !if %variable_exists("$author_name")
-        !$header = $header + "Author: " + $author_name + "\n"
+    !if $author != ""
+        !$header = $header + "Author: " + $author + "\n"
     !endif
-    !if %variable_exists("$revision_name") && %variable_exists("$title")
+    !if $revision != "" && $title != ""
         !$header = $header + $title + " Rev. " + $revision_name + "\n"
     !endif
 
-    !$header = $header + "Rendered on " + $today
-
-    !if %not($hide_meta)
-        header $header
+    !if $header != ""
+        header $header + "Rendered on " + $today
     !endif
 !endprocedure
 
-!procedure $add_std_footer()
+!procedure $add_footer($company="", $confidential="")
     !$footer = ""
-    !if %variable_exists("$company_name")
-        !$footer = $footer + $company_name
+    !if $company != ""
+        !$footer = $footer + $company
     !endif
     !if $confidential == %true()
         !if %strlen($footer) > 0
@@ -70,23 +61,17 @@
         !$footer = $footer + "<color:red>Confidential</color>"
     !endif
 
-    !if %not($hide_meta)
+    !if $footer != ""
+        ' add linebreak for spacing
         footer \n$footer
     !endif
 !endprocedure
 
-!procedure $add_std_title()
-    !if %not($hide_meta) && %variable_exists("$title")
+!procedure $add_title($title="")
+    !if $title != ""
         title $title
     !endif
 !endprocedure
-
-!procedure $add_std_info()
-    $add_std_header()
-    $add_std_footer()
-    $add_std_title()
-!endprocedure
-
 
 ' ===
 ' Styling/Layout Helpers
@@ -624,12 +609,17 @@
 ' Library Macros/Procs
 ' ===
 
-!procedure $setup_std_diagram($style_name="generic")
-    !$diagram_style_proc_name = "$apply_" + $style_name + "_styles"
-    !assert %function_exists($diagram_style_proc_name) : "Could not apply styles for '" + $style_name + "'. Typo?"
+!procedure Enrich($diagram="generic", $title="", $company="", $author="", $revision="", $confidential=%true())
+    ' apply styles
+    !$diagram_style_proc_name = "$apply_" + $diagram + "_styles"
+    !assert %function_exists($diagram_style_proc_name) : "Unknown diagram type for '" + $diagram + "'."
     $apply_base_styles()
     %invoke_procedure($diagram_style_proc_name)
-    $add_std_info()
+
+    ' add meta info
+    $add_header($author, $revision, $title)
+    $add_footer($company, $confidential)
+    $add_title($title)
 !endprocedure
 
 !define PK_TYPE INTEGER(11)
