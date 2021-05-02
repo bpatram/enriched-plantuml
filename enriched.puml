@@ -632,16 +632,16 @@
         !global $ID_NAME = $id_name
     !endif
     !if $id_type != ""
-        !global $ID_TYPE = %upper($id_type)
+        !global $ID_TYPE = $id_type
     !endif
     !if $poly_type_type != ""
-        !global $POLY_TYPE_TYPE = %upper($poly_type_type)
+        !global $POLY_TYPE_TYPE = $poly_type_type
     !endif
     !if $poly_id_suffix != ""
-        !global $POLY_ID_SUFFIX = %upper($poly_id_suffix)
+        !global $POLY_ID_SUFFIX = $poly_id_suffix
     !endif
     !if $poly_type_suffix != ""
-        !global $POLY_TYPE_SUFFIX = %upper($poly_type_suffix)
+        !global $POLY_TYPE_SUFFIX = $poly_type_suffix
     !endif
 !endprocedure
 
