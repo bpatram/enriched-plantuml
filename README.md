@@ -12,7 +12,7 @@ Features:
 
 ## Getting Started
 
-At the top of your PlantUML file, you need to include `enriched.puml`. By default, nothing will immediately happen to your diagram, you must opt-in to applying individual features. To easily bootstrap a new diagram to apply the correct styles and insert document information, copyright, and confidentiality notices you can call `$setup_std_diagram_for("<diagram type>")`. The beginning of your diagram should look something like this:
+At the top of your PlantUML file, you need to include `enriched.puml`. By default, nothing will immediately happen to your diagram, you must opt-in to applying individual features. To easily bootstrap a new diagram to apply the correct styles and insert document information, copyright, and confidentiality notices you can call `$setup_std_diagram("<diagram type>")`. The beginning of your diagram should look something like this:
 
 ```puml
 !include_once https://raw.githubusercontent.com/bpatram/enriched-plantuml/master/enriched.puml
@@ -47,7 +47,7 @@ When calling `$setup_std_diagram` you must pass in a diagram type name as the fi
 
 ### Inserting title blocks
 
-When calling `$setup_std_diagram_for` it will attempt to insert a title block for you. You must define these variables _before_ making that call for it to work correctly.
+When calling `$setup_std_diagram` it will attempt to insert a title block for you. You must define these variables _before_ making that call for it to work correctly.
 
 You'll want to define the following:
 
@@ -56,7 +56,7 @@ You'll want to define the following:
 
 ### Inserting copyright and confidentiality notices
 
-When calling `$setup_std_diagram_for` it will attempt to insert a footer with company information and to identify if your diagram is confidential or not. When you define these variables it must be done _before_ making the call to `$setup_std_diagram_for`.
+When calling `$setup_std_diagram` it will attempt to insert a footer with company information and to identify if your diagram is confidential or not. When you define these variables it must be done _before_ making the call to `$setup_std_diagram`.
 
 You can insert the name of your company or employer by defining the $company_name variable:
 
@@ -72,7 +72,7 @@ By default, all diagrams are marked as confidential. To mark your diagram as not
 
 ### Entity-relationship diagrams
 
-When building ER diagrams you'll want to make sure your diagram type is `"er"` when calling `$setup_std_diagram_for` to ensure styles are applied correctly.
+When building ER diagrams you'll want to make sure your diagram type is `"er"` when calling `$setup_std_diagram` to ensure styles are applied correctly.
 
 A new object type is added called `table`. You can use it like this:
 
