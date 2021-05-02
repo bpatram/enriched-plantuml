@@ -710,10 +710,13 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
     Abstract $name<polymorphic><<polymorphic>>
 !endprocedure)
 
-!define poly_assoc(name) abstract name<polymorphic>
+!unquoted procedure has_one_poly($from, $as)
+    PolymorphicLink($as)
+
+    $from }-- $as
+!endprocedure
 
 !define has_one(from, to) from }--|| to
-!define has_one_poly(from, to) from }-- to
 !define poly_can_be(from, to) from --|| to
 !define has_one_to_one(from, to) from ||--|| to
 !define has_many(from, to) from }--{ to
