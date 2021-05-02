@@ -160,16 +160,16 @@
     Frame Items {
         Table(items_progress_report_caches) {
             ---
-            column_pk()
-            timestamps()
-            column_fk(item_id)
-            column_non_nullable(photos_uploaded, REPORT_STATUS_ENUM)
-            column_non_nullable(photo_editing_work, REPORT_STATUS_ENUM)
+            table_pk()
+            table_timestamps($destroyed=1)
+            table_fk(item_id)
+            table_column(photos_uploaded, REPORT_STATUS_ENUM, $nullable=0)
+            table_column(photo_editing_work, REPORT_STATUS_ENUM, $nullable)
         }
 
         Table(items) {
             ---
-            column_pk()
+            table_pk()
             omitted_columns()
             column_fk_poly(ownable)
         }
