@@ -43,7 +43,7 @@ When calling `$setup_std_diagram` you must pass in a diagram type name as the fi
 ### Formatting helpers
 
 -   `$use_word_wrap()`: Apply word wrapping to text within boxes and titles
--   `$use_horizontal_layout()`: Rotate the layout of all directions to be horizontal
+-   `$use_horizontal_layout()`: Rotate the layout from top down to right to left
 
 ### Inserting title blocks
 
@@ -152,7 +152,7 @@ has_one(books, authors)
 
 #### Polymorphic Relationships
 
-Polymorphic relationships are a non-standard concept when talking about modeling a data schema. However, most ORMs support this type of relationship so modeling them in your ER diagrams is a common challenge/ Since a polymorphic relationship represents a relationship to differing tables we can represent the polymorphic relationship as an intermediate object between the table containing the foreign key and the tables that it could possibly be referencing. Below is a complete example to show how this works in practice.
+Polymorphic relationships are a non-standard concept when talking about modeling a data schema. However, most ORMs support this type of relationship so modeling them in your ER diagrams is a common challenge. Since a polymorphic relationship represents a relationship to differing tables we can represent the polymorphic relationship as an intermediate object between the table containing the foreign key and the tables that it could possibly be referencing. Below is a complete example to show how this works in practice.
 
 Define a polymorphic foreign key and foreign key type fields on your table via `column_fk_poly()`. Define your polymorphic relationship intermediate object via `poly_assoc()`.
 Relate your table with the polymorphic fields to the intermediate object via `has_one_poly()`.
