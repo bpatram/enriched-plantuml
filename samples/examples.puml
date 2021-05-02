@@ -170,7 +170,7 @@
         Table(items) {
             ---
             table_pk()
-            omitted_columns()
+            table_omission()
             column_fk_poly(ownable)
         }
     }

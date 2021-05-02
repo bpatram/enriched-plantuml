@@ -655,7 +655,8 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
     Table($name)<<partial>> {
         ---
         table_pk()
-        omitted_columns()
+        ..
+        <i>omitted columns</i>
     }
 !endprocedure
 
@@ -716,6 +717,12 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
     $from }-- $as
 !endprocedure
 
+!procedure table_omission()
+..
+<i>omitted columns</i>
+..
+!endprocedure
+
 !define has_one(from, to) from }--|| to
 !define poly_can_be(from, to) from --|| to
 !define has_one_to_one(from, to) from ||--|| to
@@ -724,4 +731,3 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
     {method} + <b>name##id_suffix</b>: $ID_TYPE
     {field} + <b>name##type_suffix</b>: type_type
 !enddefinelong
-!define omitted_columns(name = "...") //name//
