@@ -175,8 +175,6 @@
         }
     }
 
-    poly_assoc(ownable)
-
     PartialTable(users)
     PartialTable(organizations)
 
