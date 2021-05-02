@@ -687,6 +687,23 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
     {method} + <b>$name</b>: $type
 !endprocedure
 
+!unquoted procedure table_poly_fk($as, $type_type="", $id_type="", $id_suffix="", $type_suffix="", $nullable=%false())
+    !if $id_type == ""
+        !$id_type = $ID_TYPE
+    !endif
+    !if $type_type == ""
+        !$type_type = $POLY_TYPE_TYPE
+    !endif
+    !if $id_suffix == ""
+        !$id_suffix = $POLY_ID_SUFFIX
+    !endif
+    !if $type_suffix == ""
+        !$type_suffix = $POLY_TYPE_SUFFIX
+    !endif
+    table_fk($as##$id_suffix, $id_type, $nullable=$nullable)
+    table_column($as##$type_suffix, $type_type, $nullable=$nullable)
+!endprocedure
+
 !unquoted procedure table_timestamps($created=%true(), $updated=%true(), $destroyed=%false())
     !if $created == %true()
         table_column(created_at, DATETIME, $nullable=0)
@@ -723,11 +740,18 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
 ..
 !endprocedure
 
-!define has_one(from, to) from }--|| to
-!define poly_can_be(from, to) from --|| to
-!define has_one_to_one(from, to) from ||--|| to
-!define has_many(from, to) from }--{ to
-!definelong column_fk_poly(name, type_type="VARCHAR", id_suffix = "_id", type_suffix = "_type")
-    {method} + <b>name##id_suffix</b>: $ID_TYPE
-    {field} + <b>name##type_suffix</b>: type_type
-!enddefinelong
+!unquoted procedure has_one($from, $to)
+    $from }--|| $to
+!endprocedure
+
+!unquoted procedure has_many($from, $to)
+    $from }--{ $to
+!endprocedure
+
+!unquoted procedure has_one_to_one($from, $to)
+    $from ||--|| $to
+!endprocedure
+
+!unquoted procedure poly_can_be($as, $to)
+    $as --|| $to
+!endprocedure
