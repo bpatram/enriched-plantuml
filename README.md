@@ -68,11 +68,13 @@ Here is a list of named arguments you can define when calling Enrich that relate
 Enrich("<diagram type>", $company = "My Company", $confidential = 0)
 ```
 
-### Entity-relationship diagrams
+---
+
+## Entity-relationship diagrams
 
 When building ER diagrams you'll want to make sure your diagram type is `"er"` when calling `Enrich` to ensure styles are applied correctly.
 
-#### Assumptions/defaults
+### Assumptions/defaults
 
 There are some assumptions made by this library when generating ER diagrams. These defaults can be overridden but have been optimized for diagraming databases created using ActiveRecord (a popular ORM for Ruby on Rails applications). You can call `SET_SCHEMA_DEFAULTS` with the following named arguments to override them.
 
@@ -90,7 +92,7 @@ Below is a simple example of changing the default to use a "UUID" datatype inste
 SET_SCHEMA_DEFAULTS($id_type="UUID")
 ```
 
-#### Tables
+### Tables
 
 To define a new table, use the `Table` element. To set the table name pass it in as the first argument. Within your table you can use additional macros to define the columns your table and to associate tables together (read on).
 
@@ -101,7 +103,7 @@ Table(your_table_name) {
 }
 ```
 
-#### Primary keys
+### Primary keys
 
 Define a primary key field within your table using `table_pk()`. By default the field will be called 'id' with a datatype of 'INTEGER(11)' but you can override this behavior by passing in arguments or by changing the schema defaults via `SET_SCHEMA_DEFAULTS`
 
@@ -116,7 +118,7 @@ table_pk('identifier')
 table_pk('id', 'UUID')
 ```
 
-#### Foreign keys
+### Foreign keys
 
 Define a foreign key field within your table using `table_fk()`. You'll need to define the column name by passing in a name as the first argument. By default the datatype will be 'INTEGER(11)' but you can override this behavior by passing in a second argument or by changing the schema defaults via `SET_SCHEMA_DEFAULTS`. By default, FK columns are non-nullable, you can override this behavior by passing in a `$nullable` named argument and setting it to true.
 
@@ -131,7 +133,7 @@ table_fk(other_table_id, 'UUID')
 table_fk(other_table_id, $nullable=1)
 ```
 
-#### Table columns
+### Table columns
 
 Define an ordinary field with `table_column()`. The first argument sets the column name and the second argument set its datatype. You can pass additional data, like if it is nullable or not using named arguments. By default columns are nullable, you can override this by passing in a `$nullable` named argument and setting it to true.
 
@@ -143,7 +145,7 @@ table_column(column_name, 'DATETIME')
 table_column(column_name, 'DATETIME', $nullable=0)
 ```
 
-#### Timestamp columns
+### Timestamp columns
 
 In most applications it is common to include some additional fields on your table to store "created_at" and "updated_at" timestamps (and sometimes "destroyed_at"). Instead of having to declare these fields on your table separately via `table_column()`, you can instead use `table_timestamps()`. You can configure which timestamp columns to add via named arguments.
 
@@ -158,7 +160,7 @@ table_timestamps($destroyed_at=1)
 table_timestamps($updated_at=0)
 ```
 
-#### Partial Tables
+### Partial Tables
 
 Often times you will find yourself only needing to diagram a single area of concern in your schema and not the entire schema. In this case there are some handy helpers provided. In the scenario where you just need to reference a table and handwave over its entire shape, you can use the `PartialTable` element. If you are diagraming out a table but want to handwave over irrelevant columns you can use `table_omission()`.
 
@@ -175,7 +177,7 @@ Table(users) {
 }
 ```
 
-#### Relationships
+### Relationships
 
 To define a many to one relationship use `has_one()`.
 To define a many to many relationship use `has_many()`.
@@ -195,7 +197,7 @@ Table(authors) {
 has_one(books, authors)
 ```
 
-#### Polymorphic Relationships
+### Polymorphic Relationships
 
 Polymorphic relationships are a non-standard concept when talking about modeling a data schema. However, most ORMs support this type of relationship so modeling them in your ER diagrams is a common challenge. Since a polymorphic relationship represents a relationship to differing tables we can represent the polymorphic relationship as an intermediate object between the table containing the foreign key and the tables that it could possibly be referencing. Below is a complete example to show how this works in practice.
 
@@ -220,7 +222,7 @@ poly_can_be(ownable, companies)
 
 ```
 
-#### Enums
+### Enums
 
 To represent enums in your schema, you can define an `EnumType` element. Pass in the enum name and its datatype as the first and second arguments. It appears similar to a table in your diagram but will be styled a bit differently and will contain the values of your enum.
 
