@@ -12,33 +12,30 @@ Features:
 
 ## Getting Started
 
-At the top of your PlantUML file, you need to include `enriched.puml`. By default, nothing will immediately happen to your diagram, you must opt-in to applying individual features. To easily bootstrap a new diagram to apply the correct styles and insert document information, copyright, and confidentiality notices you can call `$setup_std_diagram("<diagram type>")`. The beginning of your diagram should look something like this:
+At the top of your PlantUML file, you need to include `enriched.puml`. By default, nothing will immediately happen to your diagram, you must opt-in to applying individual features. To do so, you can easily bootstrap a new diagram by calling `Enrich("<diagram type>")`.
+
+The beginning of your diagram should look something like this:
 
 ```puml
 !include_once https://raw.githubusercontent.com/bpatram/enriched-plantuml/master/enriched.puml
 
-!$title = "My Diagram"
-!$company_name = "ACME Corp"
-!$author_name = "John Smith"
-!$revision_name = "1"
-
-$setup_std_diagram("<diagram-type>")
+Enrich("<diagram-type>", $title = "My Diagram")
 ```
 
 ### Styling
 
-When calling `$setup_std_diagram` you must pass in a diagram type name as the first argument in order to apply the correct styles for that diagram type. The current possible diagram types you can style are:
+When calling `Enrich` you should pass in a diagram type as the first argument in order to apply the correct styles for that diagram type. The current possible diagram types you can style are:
 
--   `$setup_std_diagram("sequence")`
--   `$setup_std_diagram("activity")`
--   `$setup_std_diagram("state")`
--   `$setup_std_diagram("class")`
--   `$setup_std_diagram("usecase")`
--   `$setup_std_diagram("object")`
--   `$setup_std_diagram("deployment")`
--   `$setup_std_diagram("er")`
--   `$setup_std_diagram("generic")`
--   `$setup_std_diagram()` (same as `$setup_std_diagram("generic")`)
+-   `"sequence"`
+-   `"activity"`
+-   `"state"`
+-   `"class"`
+-   `"usecase"`
+-   `"object"`
+-   `"deployment"`
+-   `"er"`
+-   `"generic"`
+-   Leaving it blank will only apply basic styling, not specific to any diagram type
 
 ### Formatting helpers
 
@@ -47,138 +44,177 @@ When calling `$setup_std_diagram` you must pass in a diagram type name as the fi
 
 ### Inserting title blocks
 
-When calling `$setup_std_diagram` it will attempt to insert a title block for you. You must define these variables _before_ making that call for it to work correctly.
+Currently, title blocks are formatted as a header that appears in the top right of your diagram. This information will only be shown if you define certain arguments when calling `Enrich`.
 
-You'll want to define the following:
+Here is a list of named arguments you can define when calling Enrich that relate to the title block:
 
--   `!$author_name = "Your Name"`
--   `!$revision_name = "Rev. 1"` (optional)
+-   `$author = "Your Name"` (optional)
+-   `$revision = "Rev. 1"` (optional)
+
+```puml
+Enrich("<diagram type>", $author = "Your Name", $revision = "1")
+```
 
 ### Inserting copyright and confidentiality notices
 
-When calling `$setup_std_diagram` it will attempt to insert a footer with company information and to identify if your diagram is confidential or not. When you define these variables it must be done _before_ making the call to `$setup_std_diagram`.
+Currently, copyright and confidentiality notices are formatted as a footer that appears in the bottom center of your diagram. By default, all diagrams are treated as confidential. You can define a company name and/or override the default behavior with some additional arguments passed when calling `Enrich`.
 
-You can insert the name of your company or employer by defining the $company_name variable:
+Here is a list of named arguments you can define when calling Enrich that relate to copyright/confidentiality:
+
+-   `$company = "Your Employer"` (optional)
+-   `$confidential = 0` (optional)
 
 ```puml
-!$company_name = "Your Company"
+Enrich("<diagram type>", $company = "My Company", $confidential = 0)
 ```
 
-By default, all diagrams are marked as confidential. To mark your diagram as not confidential:
+---
+
+## Entity-relationship diagrams
+
+When building ER diagrams you'll want to make sure your diagram type is `"er"` when calling `Enrich` to ensure styles are applied correctly.
+
+### Assumptions/defaults
+
+There are some assumptions made by this library when generating ER diagrams. These defaults can be overridden but have been optimized for diagraming databases created using ActiveRecord (a popular ORM for Ruby on Rails applications). You can call `SET_SCHEMA_DEFAULTS` with the following named arguments to override them.
+
+Below is a list of the named arguments you can pass along with the current defaults used:
+
+-   `$id_name = "id"`: Default PK column name when calling `table_pk()`.
+-   `$id_type = "INTEGER(11)"`: Default PK/FK datatype when creating PK/FK columns.
+-   `$poly_type_type = "VARCHAR"`: Default datatype for polymorphic "type" columns.
+-   `$poly_id_suffix = "_id"`: Default text to append to the polymorphic name when creating FK column.
+-   `$poly_type_suffix = "_type"`: Default text to append to the polymorphic name when creating type column.
+
+Below is a simple example of changing the default to use a "UUID" datatype instead of sequential IDs for PK/FKs:
 
 ```puml
-!$confidential = %false()
+SET_SCHEMA_DEFAULTS($id_type="UUID")
 ```
 
-### Entity-relationship diagrams
+### Tables
 
-When building ER diagrams you'll want to make sure your diagram type is `"er"` when calling `$setup_std_diagram` to ensure styles are applied correctly.
-
-#### Tables
-
-To define a new table, use the `table` object. To set the table name pass it in as the first argument. Within your tables you can use additional macros to define the columns or fields on your table.
+To define a new table, use the `Table` element. To set the table name pass it in as the first argument. Within your table you can use additional macros to define the columns your table and to associate tables together (read on).
 
 ```puml
-table(your_table_name) {
+Table(your_table_name) {
     ---
-    ' define your fields...
+    ' define your fields here...
 }
 ```
 
-#### Fields
+### Primary keys
 
-In most databases the identifier or reference columns use the same datatype across all tables. By default primary and foreign keys are assumed to be an INTEGER(11) datatype, however you can change this behavior by overwriting `PK_TYPE` value to something else. If you use UUIDs for example you will want to do something like this:
-
-```puml
-!define PK_TYPE UUID
-```
-
-Define a primary key field within your table using `column_pk()`. By default the field will be called 'id' but you can override this behavior by passing in a new name as the first argument. If its datatype differs from `PK_TYPE` (`INTEGER(11)` by default) you can define a new datatype by passing a second argument.
+Define a primary key field within your table using `table_pk()`. By default the field will be called 'id' with a datatype of 'INTEGER(11)' but you can override this behavior by passing in arguments or by changing the schema defaults via `SET_SCHEMA_DEFAULTS`
 
 ```puml
-' to create a PK named 'id'
-column_pk()
+' to create a PK named 'id' (based on schema defaults)
+table_pk()
 
 ' or with a custom field name
-column_pk('identifier')
+table_pk('identifier')
 
 ' or with a custom datatype
-column_pk('id', 'UUID')
+table_pk('id', 'UUID')
 ```
 
-Define a foreign key field within your table using `column_fk()`. You'll need to define the column name by passing in a name as the first argument. If its datatype differs from `PK_TYPE` (`INTEGER(11)` by default) you can define a new datatype by passing a second argument.
+### Foreign keys
+
+Define a foreign key field within your table using `table_fk()`. You'll need to define the column name by passing in a name as the first argument. By default the datatype will be 'INTEGER(11)' but you can override this behavior by passing in a second argument or by changing the schema defaults via `SET_SCHEMA_DEFAULTS`. By default, FK columns are non-nullable, you can override this behavior by passing in a `$nullable` named argument and setting it to true.
 
 ```puml
 ' to create a FK named 'other_table_id'
-column_fk(other_table_id)
+table_fk(other_table_id)
 
 ' or with a custom datatype
-column_fk(other_table_id, 'UUID')
+table_fk(other_table_id, 'UUID')
+
+' or if it is nullable
+table_fk(other_table_id, $nullable=1)
 ```
 
-Define an ordinary field with either `column_non_nullable()` or `column_nullable()`. The first argument sets the column name and the second argument set its datatype.
+### Table columns
+
+Define an ordinary field with `table_column()`. The first argument sets the column name and the second argument set its datatype. You can pass additional data, like if it is nullable or not using named arguments. By default columns are nullable, you can override this by passing in a `$nullable` named argument and setting it to true.
 
 ```puml
-' to create a non-nullable field
-column_non_nullable(column_name, 'DATETIME')
+' to create a nullable field (default behavior)
+table_column(column_name, 'DATETIME')
 
-' to create a nullable field
-column_nullable(column_name, 'DATETIME')
+' to create a non-nullable field
+table_column(column_name, 'DATETIME', $nullable=0)
 ```
 
-When making diagrams which only highlights a specific area of concern of your schema you may want to only need to partially define your tables. There is a handy macro, `omitted_columns()` to indicate that you are omitting some fields on your table.
+### Timestamp columns
 
-In most applications it is common to include some additional fields on your table to store "created_at" and "updated_at" timestamps. Instead of having to declare these fields on your table separately, you can instead simply use the `timestamps()` macro.
+In most applications it is common to include some additional fields on your table to store "created_at" and "updated_at" timestamps (and sometimes "destroyed_at"). Instead of having to declare these fields on your table separately via `table_column()`, you can instead use `table_timestamps()`. You can configure which timestamp columns to add via named arguments.
 
-#### Relationships
+```puml
+' to add 'created_at' and 'updated_at' timestamp columns (default behavior)
+table_timestamps()
+
+' to add 'destroyed_at' timestamp column (in addition to created_at and updated_at)
+table_timestamps($destroyed_at=1)
+
+' to add only a 'created_at' timestamp column
+table_timestamps($updated_at=0)
+```
+
+### Partial Tables
+
+Often times you will find yourself only needing to diagram a single area of concern in your schema and not the entire schema. In this case there are some handy helpers provided. In the scenario where you just need to reference a table and handwave over its entire shape, you can use the `PartialTable` element. If you are diagraming out a table but want to handwave over irrelevant columns you can use `table_omission()`.
+
+```
+' creates a table with just a PK and 'omitted columns'
+PartialTable(users)
+
+' or to create a table with a mix of omitted and defined columns
+Table(users) {
+    table_pk()
+    table_timestamps()
+    table_omission()
+    table_fk(foo_id)
+}
+```
+
+### Relationships
 
 To define a many to one relationship use `has_one()`.
 To define a many to many relationship use `has_many()`.
 
 ```puml
-table(books) {
+Table(books) {
     ---
-    column_pk()
-    column_fk(author_id)
+    table_pk()
+    table_fk(author_id)
 }
 
-table(authors) {
+Table(authors) {
     ---
-    column_pk()
+    table_pk()
 }
 
 has_one(books, authors)
 ```
 
-#### Polymorphic Relationships
+### Polymorphic Relationships
 
 Polymorphic relationships are a non-standard concept when talking about modeling a data schema. However, most ORMs support this type of relationship so modeling them in your ER diagrams is a common challenge. Since a polymorphic relationship represents a relationship to differing tables we can represent the polymorphic relationship as an intermediate object between the table containing the foreign key and the tables that it could possibly be referencing. Below is a complete example to show how this works in practice.
 
-Define a polymorphic foreign key and foreign key type fields on your table via `column_fk_poly()`. Define your polymorphic relationship intermediate object via `poly_assoc()`.
+Define a polymorphic foreign key and foreign key type fields on your table via `table_poly_fk()`.
 Relate your table with the polymorphic fields to the intermediate object via `has_one_poly()`.
 Define the tables that your polymorphic relationship could reference via `poly_can_be()`.
 
 ```puml
-table(items) {
+Table(items) {
     ---
-    column_pk()
+    table_pk()
 
-    column_fk_poly(ownable)
+    table_fk_poly(ownable)
 }
 
-poly_assoc(ownable)
-
-table(users) {
-    ---
-    column_pk()
-    omitted_columns()
-}
-
-table(companies) {
-    ---
-    column_pk()
-    omitted_columns()
-}
+PartialTable(users)
+PartialTable(companies)
 
 has_one_poly(items, ownable)
 poly_can_be(ownable, users)
@@ -186,14 +222,14 @@ poly_can_be(ownable, companies)
 
 ```
 
-#### Enums
+### Enums
 
-To represent enums in your schema, you can define an `enum_mapping` object. Pass in the enum name and its datatype as the first and second arguments. It appears similar to a table in your diagram but will be styled a bit differently and will contain the values of your enum.
+To represent enums in your schema, you can define an `EnumType` element. Pass in the enum name and its datatype as the first and second arguments. It appears similar to a table in your diagram but will be styled a bit differently and will contain the values of your enum.
 
 To define your enum values use `enum_value()` and pass the name and value as the first and second arguments.
 
 ```puml
-enum_mapping(MY_ENUM_NAME, INTEGER) {
+EnumType(MY_ENUM_NAME, "INT(11")) {
     enum_value(my_value_one, 1)
     enum_value(my_value_two, 2)
 }

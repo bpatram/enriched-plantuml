@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased, 3.0.0]
+
+### Added
+
+-   `PartialTable` element type for quickly defining a Table with omitted columns and a PK
+-   `TableLayer` element for grouping tables together
+-   Control which timestamp table columns are added when calling `table_timestamps()`
+-   Support for "destroyed_at" timestamp table column
+-   Setting and presenting table column nullability as a data type
+
+### Changed
+
+-   `$setup_std_diagram` renamed to `Enrich`
+-   Define diagram info via names arguments to `Enrich` instead of global variables
+-   `PK_TYPE` replaced by calling `SET_SCHEMA_DEFAULTS` with named argument `$id_type`
+-   `table` element renamed to `Table` (case-sensitive)
+-   `enum_mapping` element renamed to `EnumType` (case-sensitive)
+-   `poly_assoc` merged into `has_one_poly`
+-   `timestamps` renamed to `table_timestamps`
+-   `omitted_columns` renamed to `table_omission`
+-   `column_fk_poly` renamed to `table_poly_fk`
+-   Omitted columns on tables is more clear
+-   Table foreign keys and polymorphic columns are non-nullable by default
+
 ## [2.5.0] - 2021-04-29
 
 ### Added

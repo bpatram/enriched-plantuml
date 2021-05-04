@@ -3,8 +3,6 @@
 ' ===
 
 !$today = %date("yyyy-MM-dd")
-!$confidential ?= %true()
-!$hide_meta ?= %false()
 !$theme_data ?= {
     "textFont": "Helvetica",
     "codeFont": "Menlo",
@@ -37,31 +35,24 @@
     "borderThickness": 1.5
 }
 
-' !$title = "[Untitled] (set $title)"
-' !$revision_name = "1"
-' !$author_name = "Your Name"
-' !$company_name = "Where you work"
-
-!procedure $add_std_header()
+!procedure $add_header($author="", $revision="", $title="")
     !$header = ""
-    !if %variable_exists("$author_name")
-        !$header = $header + "Author: " + $author_name + "\n"
+    !if $author != ""
+        !$header = $header + "Author: " + $author + "\n"
     !endif
-    !if %variable_exists("$revision_name") && %variable_exists("$title")
+    !if $revision != "" && $title != ""
         !$header = $header + $title + " Rev. " + $revision_name + "\n"
     !endif
 
-    !$header = $header + "Rendered on " + $today
-
-    !if %not($hide_meta)
-        header $header
+    !if $header != ""
+        header $header + "Rendered on " + $today
     !endif
 !endprocedure
 
-!procedure $add_std_footer()
+!procedure $add_footer($company="", $confidential="")
     !$footer = ""
-    !if %variable_exists("$company_name")
-        !$footer = $footer + $company_name
+    !if $company != ""
+        !$footer = $footer + $company
     !endif
     !if $confidential == %true()
         !if %strlen($footer) > 0
@@ -70,23 +61,17 @@
         !$footer = $footer + "<color:red>Confidential</color>"
     !endif
 
-    !if %not($hide_meta)
+    !if $footer != ""
+        ' add linebreak for spacing
         footer \n$footer
     !endif
 !endprocedure
 
-!procedure $add_std_title()
-    !if %not($hide_meta) && %variable_exists("$title")
+!procedure $add_title($title="")
+    !if $title != ""
         title $title
     !endif
 !endprocedure
-
-!procedure $add_std_info()
-    $add_std_header()
-    $add_std_footer()
-    $add_std_title()
-!endprocedure
-
 
 ' ===
 ' Styling/Layout Helpers
@@ -624,39 +609,156 @@
 ' Library Macros/Procs
 ' ===
 
-!procedure $setup_std_diagram($style_name="generic")
-    !$diagram_style_proc_name = "$apply_" + $style_name + "_styles"
-    !assert %function_exists($diagram_style_proc_name) : "Could not apply styles for '" + $style_name + "'. Typo?"
+!procedure Enrich($diagram="generic", $title="", $company="", $author="", $revision="", $confidential=%true())
+    ' apply styles
+    !$diagram_style_proc_name = "$apply_" + $diagram + "_styles"
+    !assert %function_exists($diagram_style_proc_name) : "Unknown diagram type for '" + $diagram + "'."
     $apply_base_styles()
     %invoke_procedure($diagram_style_proc_name)
-    $add_std_info()
+
+    ' add meta info
+    $add_header($author, $revision, $title)
+    $add_footer($company, $confidential)
+    $add_title($title)
 !endprocedure
 
-!define PK_TYPE INTEGER(11)
 
-!define table(name) entity name<<table>>
-!define enum_mapping(name, type) enum name<type><<enum>>
-!define poly_assoc(name) abstract name<polymorphic>
-!define enum_value(name, value) {field} - <b>name</b>: value
+' ===
+' ER Diagram Macros/Procs
+' ===
 
-!define has_one(from, to) from }--|| to
-!define has_one_poly(from, to) from }-- to
-!define poly_can_be(from, to) from --|| to
-!define has_one_to_one(from, to) from ||--|| to
-!define has_many(from, to) from }--{ to
-!define column_pk(name = "id") {field} {static}{method} # <b>name</b>: PK_TYPE
-!define column_pk(name = "id", type) {static}{method} # <b>name</b>: type
-!define column_fk(name) {method} + <b>name</b>: PK_TYPE
-!define column_fk(name, type) {method} + <b>name</b>: type
-!definelong column_fk_poly(name, type_type="VARCHAR", id_suffix = "_id", type_suffix = "_type")
-    {method} + <b>name##id_suffix</b>: PK_TYPE
-    {field} + <b>name##type_suffix</b>: type_type
-!enddefinelong
-!define column_non_nullable(name, type) {field} + <b>name</b>: type
-!define column_nullable(name, type) {field} + <b>name</b>: type
-!define omitted_columns(name = "...") //name//
+!procedure SET_SCHEMA_DEFAULTS($id_name="", $id_type="", $poly_type_type="", $poly_id_suffix="", $poly_type_suffix="")
+    !if $id_name != ""
+        !global $ID_NAME = $id_name
+    !endif
+    !if $id_type != ""
+        !global $ID_TYPE = $id_type
+    !endif
+    !if $poly_type_type != ""
+        !global $POLY_TYPE_TYPE = $poly_type_type
+    !endif
+    !if $poly_id_suffix != ""
+        !global $POLY_ID_SUFFIX = $poly_id_suffix
+    !endif
+    !if $poly_type_suffix != ""
+        !global $POLY_TYPE_SUFFIX = $poly_type_suffix
+    !endif
+!endprocedure
 
-!definelong timestamps()
-    column_non_nullable(created_at, DATETIME)
-    column_non_nullable(updated_at, DATETIME)
-!enddefinelong
+SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARCHAR", $poly_id_suffix="_id", $poly_type_suffix="_type")
+
+!procedure TableLayer($name, $color="")
+    !if $color != ""
+        !$color = "#back:" + $color
+    !endif
+    Frame $name <<tablelayer>> $color
+!endprocedure
+
+!unquoted procedure Table($name)
+    Entity $name<<table>>
+!endprocedure
+
+!unquoted procedure PartialTable($name)
+    Table($name)<<partial>> {
+        ---
+        table_pk()
+        ..
+        <i>omitted columns</i>
+    }
+!endprocedure
+
+!unquoted procedure table_column($name, $type, $nullable=%true())
+    !if $nullable == %false()
+        !$type = $type + " NOT NULL"
+    !endif
+    {field} + <b>$name</b>: $type
+!endprocedure
+
+!unquoted procedure table_pk($name="", $type="")
+    !if $type == ""
+        !$type = $ID_TYPE
+    !endif
+    !if $name == ""
+        !$name = $ID_NAME
+    !endif
+    {method} # <u><b>$name</b></u>: $type NOT NULL
+!endprocedure
+
+!unquoted procedure table_fk($name, $type="", $nullable=%false())
+    !if $type == ""
+        !$type = $ID_TYPE
+    !endif
+    !if $nullable == %false()
+        !$type = $type + " NOT NULL"
+    !endif
+    {method} + <b>$name</b>: $type
+!endprocedure
+
+!unquoted procedure table_poly_fk($as, $type_type="", $id_type="", $id_suffix="", $type_suffix="", $nullable=%false())
+    !if $id_type == ""
+        !$id_type = $ID_TYPE
+    !endif
+    !if $type_type == ""
+        !$type_type = $POLY_TYPE_TYPE
+    !endif
+    !if $id_suffix == ""
+        !$id_suffix = $POLY_ID_SUFFIX
+    !endif
+    !if $type_suffix == ""
+        !$type_suffix = $POLY_TYPE_SUFFIX
+    !endif
+    table_fk($as##$id_suffix, $id_type, $nullable=$nullable)
+    table_column($as##$type_suffix, $type_type, $nullable=$nullable)
+!endprocedure
+
+!unquoted procedure table_timestamps($created=%true(), $updated=%true(), $destroyed=%false())
+    !if $created == %true()
+        table_column(created_at, DATETIME, $nullable=0)
+    !endif
+    !if $updated == %true()
+        table_column(updated_at, DATETIME, $nullable=0)
+    !endif
+    !if $destroyed == %true()
+        table_column(destroyed_at, DATETIME)
+    !endif
+!endprocedure
+
+!unquoted procedure EnumType($name, $type)
+    Enum $name<$type><<enum>>
+!endprocedure
+
+!unquoted procedure enum_value($name, $value)
+    {field} - <b>$name</b>: $value
+!endprocedure
+
+!unquoted procedure PolymorphicLink($name)
+    Abstract $name<polymorphic><<polymorphic>>
+!endprocedure)
+
+!unquoted procedure has_one_poly($from, $as)
+    PolymorphicLink($as)
+
+    $from }-- $as
+!endprocedure
+
+!procedure table_omission()
+..
+<i>omitted columns</i>
+..
+!endprocedure
+
+!unquoted procedure has_one($from, $to)
+    $from }--|| $to
+!endprocedure
+
+!unquoted procedure has_many($from, $to)
+    $from }--{ $to
+!endprocedure
+
+!unquoted procedure has_one_to_one($from, $to)
+    $from ||--|| $to
+!endprocedure
+
+!unquoted procedure poly_can_be($as, $to)
+    $as --|| $to
+!endprocedure
