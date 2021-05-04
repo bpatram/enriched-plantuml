@@ -667,6 +667,21 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
     }
 !endprocedure
 
+!unquoted procedure JunctionTable($to, $from, $table_pk=%true())
+    !$table_name = $to + "_" + $from
+    Table($table_name) {
+        ---
+        !if $table_pk == %true()
+        table_pk()
+        !endif
+        table_fk($to##$FK_SUFFIX)
+        table_fk($from##$FK_SUFFIX)
+    }
+
+    has_one($table_name, $to)
+    has_one($table_name, $from)
+!endprocedure
+
 !unquoted procedure table_column($name, $type, $nullable=%true())
     !if $nullable == %false()
         !$type = $type + " NOT NULL"

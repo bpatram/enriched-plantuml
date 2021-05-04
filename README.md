@@ -222,6 +222,20 @@ poly_can_be(ownable, companies)
 
 ```
 
+### Junction Tables
+
+Joining two tables is pretty common so there is an element to make this less tedious, `JunctionTable`. By default this will create a table with both tables names concatenated together, a primary key (optional) and two foreign keys to each table.
+
+```puml
+PartialTable(users)
+PartialTable(companies)
+
+JunctionTable(users, companies)
+
+' or as a non-identifying junction table
+JunctionTable(users, companies, $table_pk=0)
+```
+
 ### Enums
 
 To represent enums in your schema, you can define an `EnumType` element. Pass in the enum name and its datatype as the first and second arguments. It appears similar to a table in your diagram but will be styled a bit differently and will contain the values of your enum.

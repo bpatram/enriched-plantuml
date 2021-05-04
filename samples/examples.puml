@@ -180,6 +180,8 @@
         PartialTable(organizations)
     }
 
+    JunctionTable(users, organizations, $table_pk=0)
+
     has_one(items_progress_report_caches, items)
     has_one_poly(items, ownable)
     poly_can_be(ownable, users)
