@@ -72,7 +72,7 @@ Enrich("<diagram type>", $company = "My Company", $confidential = 0)
 
 ## Entity-relationship diagrams
 
-When building ER diagrams you'll want to make sure your diagram type is `"er"` when calling `Enrich` to ensure styles are applied correctly.
+Enriched PlantUML extends the default class diagram syntax that PlantUML offers to more easily aid in diagraming database schemas. When building ER diagrams you'll want to make sure your diagram type is `"er"` when calling `Enrich` to ensure styles are applied correctly. Below goes into more depth on what all Enriched adds and how to use it for ER diagrams.
 
 ### Assumptions/defaults
 
@@ -164,7 +164,7 @@ table_timestamps($updated_at=0)
 
 Often times you will find yourself only needing to diagram a single area of concern in your schema and not the entire schema. In this case there are some handy helpers provided. In the scenario where you just need to reference a table and handwave over its entire shape, you can use the `PartialTable` element. If you are diagraming out a table but want to handwave over irrelevant columns you can use `table_omission()`.
 
-```
+```puml
 ' creates a table with just a PK and 'omitted columns'
 PartialTable(users)
 
@@ -233,4 +233,23 @@ EnumType(MY_ENUM_NAME, "INT(11")) {
     enum_value(my_value_one, 1)
     enum_value(my_value_two, 2)
 }
+```
+
+### Table grouping
+
+When diagraming larger schemas you may want to group tables by domain to more clearly organize things. You can use the `TableLayer` element to do so. When you have multiple groups in a single diagram you may want to more easily make a distinction between them, to do so you can set a background color via the `$color` named argument.
+
+```puml
+' create a group with just a name
+TableLayer("Identity") {
+    PartialTable(users)
+    PartialTable(access_logs)
+}
+
+' create a group and set a color
+TableLayer("Inventory", $color="lightblue") {
+    PartialTable(items)
+}
+
+has_one(items, user)
 ```
