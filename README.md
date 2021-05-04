@@ -12,33 +12,28 @@ Features:
 
 ## Getting Started
 
-At the top of your PlantUML file, you need to include `enriched.puml`. By default, nothing will immediately happen to your diagram, you must opt-in to applying individual features. To easily bootstrap a new diagram to apply the correct styles and insert document information, copyright, and confidentiality notices you can call `$setup_std_diagram("<diagram type>")`. The beginning of your diagram should look something like this:
+At the top of your PlantUML file, you need to include `enriched.puml`. By default, nothing will immediately happen to your diagram, you must opt-in to applying individual features. To easily bootstrap a new diagram to apply the correct styles and insert document information, copyright, and confidentiality notices you can call `Enrich("<diagram type>")`. The beginning of your diagram should look something like this:
 
 ```puml
 !include_once https://raw.githubusercontent.com/bpatram/enriched-plantuml/master/enriched.puml
 
-!$title = "My Diagram"
-!$company_name = "ACME Corp"
-!$author_name = "John Smith"
-!$revision_name = "1"
-
-$setup_std_diagram("<diagram-type>")
+Enrich("<diagram-type>", $title = "My Diagram")
 ```
 
 ### Styling
 
-When calling `$setup_std_diagram` you must pass in a diagram type name as the first argument in order to apply the correct styles for that diagram type. The current possible diagram types you can style are:
+When calling `Enrich` you should pass in a diagram type name as the first argument in order to apply the correct styles for that diagram type. The current possible diagram types you can style are:
 
--   `$setup_std_diagram("sequence")`
--   `$setup_std_diagram("activity")`
--   `$setup_std_diagram("state")`
--   `$setup_std_diagram("class")`
--   `$setup_std_diagram("usecase")`
--   `$setup_std_diagram("object")`
--   `$setup_std_diagram("deployment")`
--   `$setup_std_diagram("er")`
--   `$setup_std_diagram("generic")`
--   `$setup_std_diagram()` (same as `$setup_std_diagram("generic")`)
+-   `"sequence"`
+-   `"activity"`
+-   `"state"`
+-   `"class"`
+-   `"usecase"`
+-   `"object"`
+-   `"deployment"`
+-   `"er"`
+-   `"generic"`
+-   Leaving it blank will only apply basic styling, not specific to any specific diagram type
 
 ### Formatting helpers
 
@@ -47,27 +42,28 @@ When calling `$setup_std_diagram` you must pass in a diagram type name as the fi
 
 ### Inserting title blocks
 
-When calling `$setup_std_diagram` it will attempt to insert a title block for you. You must define these variables _before_ making that call for it to work correctly.
+Currently, title blocks are formatted as a header that appears in the top right of your diagram. This information will only be shown if you define certain variables when calling `Enrich`.
 
-You'll want to define the following:
+Here is a list of variables you can define when calling Enrich that relate to the title block:
 
--   `!$author_name = "Your Name"`
--   `!$revision_name = "Rev. 1"` (optional)
+-   `$author = "Your Name"` (optional)
+-   `$revision = "Rev. 1"` (optional)
+
+```puml
+Enrich("<diagram type>", $author = "Your Name", $revision = "1")
+```
 
 ### Inserting copyright and confidentiality notices
 
-When calling `$setup_std_diagram` it will attempt to insert a footer with company information and to identify if your diagram is confidential or not. When you define these variables it must be done _before_ making the call to `$setup_std_diagram`.
+Currently, copyright and confidentiality notices are formatted as a footer that appears in the bottom center of your diagram. By default, all diagrams are treated as confidential. You can define a company name and/or override the default behavior by defining some additional variables when calling `Enrich`.
 
-You can insert the name of your company or employer by defining the $company_name variable:
+Here is a list of variables you can define when calling Enrich that relate to copyright/confidentiality:
 
-```puml
-!$company_name = "Your Company"
-```
-
-By default, all diagrams are marked as confidential. To mark your diagram as not confidential:
+-   `$company = "Your Employer"` (optional)
+-   `$confidential = 0` (optional)
 
 ```puml
-!$confidential = %false()
+Enrich("<diagram type>", $company = "My Company", $confidential = 0)
 ```
 
 ### Entity-relationship diagrams
