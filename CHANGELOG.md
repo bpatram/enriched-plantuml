@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+-   Renamed `$poly_id_suffix` to `$fk_suffix` argument in `SET_SCHEMA_DEFAULTS`
+
 ### Fixed
 
 -   Missing revision name in title block
