@@ -41,11 +41,11 @@
         !$header = $header + "Author: " + $author + "\n"
     !endif
     !if $revision != "" && $title != ""
-        !$header = $header + $title + " Rev. " + $revision_name + "\n"
+        !$header = $header + $title + " Rev. " + $revision + "\n"
     !endif
 
     !if $header != ""
-        header $header + "Rendered on " + $today
+        header $header Rendered on $today
     !endif
 !endprocedure
 
