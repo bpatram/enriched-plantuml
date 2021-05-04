@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 -   Renamed `$poly_id_suffix` to `$fk_suffix` argument in `SET_SCHEMA_DEFAULTS`
+-   Setting the diagram type when calling `Enrich` is no longer case sensitive
 
 ### Fixed
 

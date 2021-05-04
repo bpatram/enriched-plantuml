@@ -96,9 +96,8 @@
     ' TODO: add assert for key existence (once plantuml adds ability to check)
     ' TODO: fallback to unprefixed key value if no key exists with prefix
 
-    !if %strlen($prefix) > 0
-        !$prefixed_key = $prefix + "_" + $key
-        !return $theme_data[$prefixed_key]
+    !if $prefix != ""
+        !$key = $prefix + "_" + $key
     !endif
 
     !return $theme_data[$key]
@@ -611,7 +610,7 @@
 
 !procedure Enrich($diagram="generic", $title="", $company="", $author="", $revision="", $confidential=%true())
     ' apply styles
-    !$diagram_style_proc_name = "$apply_" + $diagram + "_styles"
+    !$diagram_style_proc_name = %lower("$apply_" + $diagram + "_styles")
     !assert %function_exists($diagram_style_proc_name) : "Unknown diagram type for '" + $diagram + "'."
     $apply_base_styles()
     %invoke_procedure($diagram_style_proc_name)
