@@ -82,8 +82,8 @@ Below is a list of the named arguments you can pass along with the current defau
 
 -   `$id_name = "id"`: Default PK column name when calling `table_pk()`.
 -   `$id_type = "INTEGER(11)"`: Default PK/FK datatype when creating PK/FK columns.
+-   `$fk_suffix = "_id"`: Default text to append to the polymorphic name when creating FK column.
 -   `$poly_type_type = "VARCHAR"`: Default datatype for polymorphic "type" columns.
--   `$poly_id_suffix = "_id"`: Default text to append to the polymorphic name when creating FK column.
 -   `$poly_type_suffix = "_type"`: Default text to append to the polymorphic name when creating type column.
 
 Below is a simple example of changing the default to use a "UUID" datatype instead of sequential IDs for PK/FKs:
