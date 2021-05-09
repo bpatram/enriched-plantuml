@@ -96,9 +96,8 @@
     ' TODO: add assert for key existence (once plantuml adds ability to check)
     ' TODO: fallback to unprefixed key value if no key exists with prefix
 
-    !if %strlen($prefix) > 0
-        !$prefixed_key = $prefix + "_" + $key
-        !return $theme_data[$prefixed_key]
+    !if $prefix != ""
+        !$key = $prefix + "_" + $key
     !endif
 
     !return $theme_data[$key]
@@ -611,7 +610,7 @@
 
 !procedure Enrich($diagram="generic", $title="", $company="", $author="", $revision="", $confidential=%true())
     ' apply styles
-    !$diagram_style_proc_name = "$apply_" + $diagram + "_styles"
+    !$diagram_style_proc_name = %lower("$apply_" + $diagram + "_styles")
     !assert %function_exists($diagram_style_proc_name) : "Unknown diagram type for '" + $diagram + "'."
     $apply_base_styles()
     %invoke_procedure($diagram_style_proc_name)
@@ -627,7 +626,7 @@
 ' ER Diagram Macros/Procs
 ' ===
 
-!procedure SET_SCHEMA_DEFAULTS($id_name="", $id_type="", $poly_type_type="", $poly_id_suffix="", $poly_type_suffix="")
+!procedure SET_SCHEMA_DEFAULTS($id_name="", $id_type="", $poly_type_type="", $fk_suffix="", $poly_type_suffix="")
     !if $id_name != ""
         !global $ID_NAME = $id_name
     !endif
@@ -637,15 +636,15 @@
     !if $poly_type_type != ""
         !global $POLY_TYPE_TYPE = $poly_type_type
     !endif
-    !if $poly_id_suffix != ""
-        !global $POLY_ID_SUFFIX = $poly_id_suffix
+    !if $fk_suffix != ""
+        !global $FK_SUFFIX = $fk_suffix
     !endif
     !if $poly_type_suffix != ""
         !global $POLY_TYPE_SUFFIX = $poly_type_suffix
     !endif
 !endprocedure
 
-SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARCHAR", $poly_id_suffix="_id", $poly_type_suffix="_type")
+SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARCHAR", $fk_suffix="_id", $poly_type_suffix="_type")
 
 !procedure TableLayer($name, $color="")
     !if $color != ""
@@ -665,6 +664,21 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
         ..
         <i>omitted columns</i>
     }
+!endprocedure
+
+!unquoted procedure JunctionTable($to, $from, $table_pk=%true())
+    !$table_name = $to + "_" + $from
+    Table($table_name) {
+        ---
+        !if $table_pk == %true()
+        table_pk()
+        !endif
+        table_fk($to##$FK_SUFFIX)
+        table_fk($from##$FK_SUFFIX)
+    }
+
+    has_one($table_name, $to)
+    has_one($table_name, $from)
 !endprocedure
 
 !unquoted procedure table_column($name, $type, $nullable=%true())
@@ -702,7 +716,7 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
         !$type_type = $POLY_TYPE_TYPE
     !endif
     !if $id_suffix == ""
-        !$id_suffix = $POLY_ID_SUFFIX
+        !$id_suffix = $FK_SUFFIX
     !endif
     !if $type_suffix == ""
         !$type_suffix = $POLY_TYPE_SUFFIX
