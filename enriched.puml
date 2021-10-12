@@ -681,7 +681,7 @@ SET_SCHEMA_DEFAULTS($id_name="id", $id_type="INTEGER(11)", $poly_type_type="VARC
     has_one($table_name, $from)
 !endprocedure
 
-!unquoted procedure table_column($name, $type, $nullable=%true())
+!unquoted procedure table_column($name, $type="VARCHAR", $nullable=%true())
     !if $nullable == %false()
         !$type = $type + " NOT NULL"
     !endif

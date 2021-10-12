@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 -   Diagrams no longer default to confidential
+-   `table_column` will default to `'VARCHAR'` data type if unspecified
 
 ## [3.1.0] - 2021-05-08
 
