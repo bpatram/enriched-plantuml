@@ -608,7 +608,7 @@
 ' Library Macros/Procs
 ' ===
 
-!procedure Enrich($diagram="generic", $title="", $company="", $author="", $revision="", $confidential=%true())
+!procedure Enrich($diagram="generic", $title="", $company="", $author="", $revision="", $confidential=%false())
     ' apply styles
     !$diagram_style_proc_name = %lower("$apply_" + $diagram + "_styles")
     !assert %function_exists($diagram_style_proc_name) : "Unknown diagram type for '" + $diagram + "'."
