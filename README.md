@@ -210,7 +210,7 @@ Table(items) {
     ---
     table_pk()
 
-    table_fk_poly(ownable)
+    table_poly_fk(ownable)
 }
 
 PartialTable(users)
