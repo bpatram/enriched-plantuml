@@ -17,10 +17,12 @@ At the top of your PlantUML file, you need to include `enriched.puml`. By defaul
 The beginning of your diagram should look something like this:
 
 ```puml
-!include_once https://raw.githubusercontent.com/bpatram/enriched-plantuml/master/enriched.puml
+!include_once https://raw.githubusercontent.com/bpatram/enriched-plantuml/v3.1.0/enriched.puml
 
 Enrich("<diagram-type>", $title = "My Diagram")
 ```
+
+> If you want the latest unreleased version use:<br> > `https://raw.githubusercontent.com/bpatram/enriched-plantuml/master/enriched.puml`
 
 ### Styling
 
